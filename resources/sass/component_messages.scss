@@ -1,0 +1,16 @@
+
+.box{
+  .messages{
+
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+
+.card{
+
+  a{
+    cursor: pointer;
+  }
+}

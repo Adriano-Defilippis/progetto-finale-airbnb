@@ -20,13 +20,53 @@ window.Vue = require('vue');
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+ window.FilePond = require('./filepond.min.js');
+ window.FilePondPluginImagePreview = require('./filepond-plugin-image-preview.min.js');
 
-const app = new Vue({
-    el: '#app',
-});
+$(document).ready(init);
+
+function init(){
+
+
+  var token = $('meta[name="csrf-token"]').attr('content');
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+
+  console.log(token);
+
+  var create_apt = new Vue({
+      el: '#app'
+  });
+
+  // filePondDropImg();
+
+  var message_comp = new Vue({
+
+      el: '#vue_messages'
+  });
+};
+
+// funzione per DROPIN file immagine
+function filePondDropImg(){
+  FilePond.registerPlugin(
+      FilePondPluginImagePreview,
+  );
+
+  FilePond.setOptions({
+      server: {
+          url: '',
+          process: {
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          }
+      }
+  });
+  var inputElement = document.querySelector('input[type="file"]');
+  var pond = FilePond.create( inputElement );
+}
+

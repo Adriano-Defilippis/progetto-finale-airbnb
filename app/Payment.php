@@ -4,11 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class Payment extends Model
 {
   protected $fillable = [
-    'body',
-    'sender_email',
+
     'apartment_id'
   ];
 
@@ -16,4 +15,6 @@ class Message extends Model
 
     return $this -> belongsTo(Apartment::class);
   }
+
+
 }

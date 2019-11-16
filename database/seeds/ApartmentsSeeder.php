@@ -16,7 +16,7 @@ class ApartmentsSeeder extends Seeder
     public function run()
     {
 
-        factory(Apartment::class, 50)
+        factory(Apartment::class, 9)
           -> make()
           -> each(function($apartment){
              //Aggiungo valori per chiave estern user_id
@@ -24,8 +24,8 @@ class ApartmentsSeeder extends Seeder
              $apartment -> user() -> associate($user);
 
              //Aggiungo valori per chiave esterna tier_id
-             $tier = Tier::inRandomOrder() -> first();
-             $apartment -> tier() -> associate($tier);
+             // $tier = Tier::inRandomOrder() -> first();
+             // $apartment -> tier() -> associate($tier);
 
              $apartment -> save();
     });

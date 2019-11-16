@@ -8,12 +8,17 @@ class Tier extends Model
 {
   protected $fillable = [
     'price',
-    'name',
-    'duration'
+    'level',
+    'duration',
   ];
 
   public function apartaments(){
 
     return $this -> hasMany(Apartment::class);
   }
+
+  // public function payments(){
+  //
+  //   return $this -> hasMany(Payment::class);
+  // }
 }

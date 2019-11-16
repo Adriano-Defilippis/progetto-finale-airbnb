@@ -14,11 +14,13 @@ class Apartment extends Model
     'bathrooms',
     'mq',
     'address',
-    'geo_coords',
     'visualizations',
     'active',
     'user_id',
-    'tier_id'
+    'tier_id',
+    'img_path',
+    'lat',
+    'lon'
   ];
 
   public function features(){
@@ -38,6 +40,11 @@ class Apartment extends Model
 
   public function messages(){
 
-    return $this -> belongsToMany(Message::class);
+    return $this -> hasMany(Message::class);
+  }
+
+  public function payments(){
+
+    return $this -> hasMany(Payment::class);
   }
 }

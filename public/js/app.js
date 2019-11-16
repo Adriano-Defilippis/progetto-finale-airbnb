@@ -49368,9 +49368,36 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var app = new Vue({
-  el: '#app'
-});
+window.FilePond = __webpack_require__(/*! ./filepond.min.js */ "./resources/js/filepond.min.js");
+window.FilePondPluginImagePreview = __webpack_require__(/*! ./filepond-plugin-image-preview.min.js */ "./resources/js/filepond-plugin-image-preview.min.js");
+$(document).ready(init);
+
+function init() {
+  var token = $('meta[name="csrf-token"]').attr('content');
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token; // filePondDropImg();
+
+  var message_comp = new Vue({
+    el: '#vue_messages'
+  });
+}
+
+; // funzione per DROPIN file immagine
+
+function filePondDropImg() {
+  FilePond.registerPlugin(FilePondPluginImagePreview);
+  FilePond.setOptions({
+    server: {
+      url: '',
+      process: {
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      }
+    }
+  });
+  var inputElement = document.querySelector('input[type="file"]');
+  var pond = FilePond.create(inputElement);
+}
 
 /***/ }),
 
@@ -49485,6 +49512,6442 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/filepond-plugin-image-preview.min.js":
+/*!***********************************************************!*\
+  !*** ./resources/js/filepond-plugin-image-preview.min.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/*!
+ * FilePondPluginImagePreview 4.5.0
+ * Licensed under MIT, https://opensource.org/licenses/MIT/
+ * Please visit https://pqina.nl/filepond/ for details.
+ */
+
+/* eslint-disable */
+!function (e, t) {
+  "object" == ( false ? undefined : _typeof(exports)) && "undefined" != typeof module ? module.exports = t() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (t),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : undefined;
+}(this, function () {
+  "use strict";
+
+  function e(e) {
+    this.wrapped = e;
+  }
+
+  function t(t) {
+    var i, r;
+
+    function a(i, r) {
+      try {
+        var o = t[i](r),
+            c = o.value,
+            s = c instanceof e;
+        Promise.resolve(s ? c.wrapped : c).then(function (e) {
+          s ? a("next", e) : n(o.done ? "return" : "normal", e);
+        }, function (e) {
+          a("throw", e);
+        });
+      } catch (e) {
+        n("throw", e);
+      }
+    }
+
+    function n(e, t) {
+      switch (e) {
+        case "return":
+          i.resolve({
+            value: t,
+            done: !0
+          });
+          break;
+
+        case "throw":
+          i.reject(t);
+          break;
+
+        default:
+          i.resolve({
+            value: t,
+            done: !1
+          });
+      }
+
+      (i = i.next) ? a(i.key, i.arg) : r = null;
+    }
+
+    this._invoke = function (e, t) {
+      return new Promise(function (n, o) {
+        var c = {
+          key: e,
+          arg: t,
+          resolve: n,
+          reject: o,
+          next: null
+        };
+        r ? r = r.next = c : (i = r = c, a(e, t));
+      });
+    }, "function" != typeof t["return"] && (this["return"] = void 0);
+  }
+
+  "function" == typeof Symbol && Symbol.asyncIterator && (t.prototype[Symbol.asyncIterator] = function () {
+    return this;
+  }), t.prototype.next = function (e) {
+    return this._invoke("next", e);
+  }, t.prototype["throw"] = function (e) {
+    return this._invoke("throw", e);
+  }, t.prototype["return"] = function (e) {
+    return this._invoke("return", e);
+  };
+
+  function i(e, t) {
+    return r(e) || function (e, t) {
+      var i = [],
+          r = !0,
+          a = !1,
+          n = void 0;
+
+      try {
+        for (var o, c = e[Symbol.iterator](); !(r = (o = c.next()).done) && (i.push(o.value), !t || i.length !== t); r = !0) {
+          ;
+        }
+      } catch (e) {
+        a = !0, n = e;
+      } finally {
+        try {
+          r || null == c["return"] || c["return"]();
+        } finally {
+          if (a) throw n;
+        }
+      }
+
+      return i;
+    }(e, t) || a();
+  }
+
+  function r(e) {
+    if (Array.isArray(e)) return e;
+  }
+
+  function a() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance");
+  }
+
+  var n = function n(e, t) {
+    return s(e.x * t, e.y * t);
+  },
+      o = function o(e, t) {
+    return s(e.x + t.x, e.y + t.y);
+  },
+      c = function c(e, t, i) {
+    var r = Math.cos(t),
+        a = Math.sin(t),
+        n = s(e.x - i.x, e.y - i.y);
+    return s(i.x + r * n.x - a * n.y, i.y + a * n.x + r * n.y);
+  },
+      s = function s() {
+    return {
+      x: arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 0,
+      y: arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 0
+    };
+  },
+      h = function h(e, t) {
+    var i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 1,
+        r = arguments.length > 3 ? arguments[3] : void 0;
+    return "string" == typeof e ? parseFloat(e) * i : "number" == typeof e ? e * (r ? t[r] : Math.min(t.width, t.height)) : void 0;
+  },
+      u = function u(e) {
+    return null != e;
+  },
+      l = function l(e, t) {
+    return Object.keys(t).forEach(function (i) {
+      return e.setAttribute(i, t[i]);
+    });
+  },
+      d = function d(e, t) {
+    var i = document.createElementNS("http://www.w3.org/2000/svg", e);
+    return t && l(i, t), i;
+  },
+      f = {
+    contain: "xMidYMid meet",
+    cover: "xMidYMid slice"
+  },
+      g = {
+    left: "start",
+    center: "middle",
+    right: "end"
+  },
+      p = function p(e) {
+    return function (t) {
+      return d(e);
+    };
+  },
+      m = {
+    image: function image(e) {
+      var t = d("image", {
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+        opacity: "0"
+      });
+      return t.onload = function () {
+        t.setAttribute("opacity", e.opacity || 1);
+      }, t.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", e.src), t;
+    },
+    rect: p("rect"),
+    ellipse: p("ellipse"),
+    text: p("text"),
+    line: function line(e) {
+      var t = d("g", {
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round"
+      }),
+          i = d("line");
+      t.appendChild(i);
+      var r = d("path");
+      t.appendChild(r);
+      var a = d("path");
+      return t.appendChild(a), t;
+    }
+  },
+      y = {
+    rect: function rect(e) {
+      return l(e, Object.assign({}, e.rect, e.styles));
+    },
+    ellipse: function ellipse(e) {
+      var t = e.rect.x + .5 * e.rect.width,
+          i = e.rect.y + .5 * e.rect.height,
+          r = .5 * e.rect.width,
+          a = .5 * e.rect.height;
+      return l(e, Object.assign({
+        cx: t,
+        cy: i,
+        rx: r,
+        ry: a
+      }, e.styles));
+    },
+    image: function image(e, t) {
+      l(e, Object.assign({}, e.rect, e.styles, {
+        preserveAspectRatio: f[t.fit] || "none"
+      }));
+    },
+    text: function text(e, t, i, r) {
+      var a = h(t.fontSize, i, r),
+          n = t.fontFamily || "sans-serif",
+          o = t.fontWeight || "normal",
+          c = g[t.textAlign] || "start";
+      l(e, Object.assign({}, e.rect, e.styles, {
+        "stroke-width": 0,
+        "font-weight": o,
+        "font-size": a,
+        "font-family": n,
+        "text-anchor": c
+      })), e.text !== t.text && (e.text = t.text, e.textContent = t.text.length ? t.text : " ");
+    },
+    line: function line(e, t, i, r) {
+      l(e, Object.assign({}, e.rect, e.styles, {
+        fill: "none"
+      }));
+      var a = e.childNodes[0],
+          u = e.childNodes[1],
+          d = e.childNodes[2],
+          f = e.rect,
+          g = {
+        x: e.rect.x + e.rect.width,
+        y: e.rect.y + e.rect.height
+      };
+
+      if (l(a, {
+        x1: f.x,
+        y1: f.y,
+        x2: g.x,
+        y2: g.y
+      }), t.lineDecoration) {
+        u.style.display = "none", d.style.display = "none";
+
+        var p = function (e) {
+          var t = Math.sqrt(e.x * e.x + e.y * e.y);
+          return 0 === t ? {
+            x: 0,
+            y: 0
+          } : s(e.x / t, e.y / t);
+        }({
+          x: g.x - f.x,
+          y: g.y - f.y
+        }),
+            m = h(.05, i, r);
+
+        if (-1 !== t.lineDecoration.indexOf("arrow-begin")) {
+          var y = n(p, m),
+              E = o(f, y),
+              v = c(f, 2, E),
+              w = c(f, -2, E);
+          l(u, {
+            style: "display:block;",
+            d: "M".concat(v.x, ",").concat(v.y, " L").concat(f.x, ",").concat(f.y, " L").concat(w.x, ",").concat(w.y)
+          });
+        }
+
+        if (-1 !== t.lineDecoration.indexOf("arrow-end")) {
+          var _ = n(p, -m),
+              I = o(g, _),
+              M = c(g, 2, I),
+              x = c(g, -2, I);
+
+          l(d, {
+            style: "display:block;",
+            d: "M".concat(M.x, ",").concat(M.y, " L").concat(g.x, ",").concat(g.y, " L").concat(x.x, ",").concat(x.y)
+          });
+        }
+      }
+    }
+  },
+      E = function E(e, t, i, r, a) {
+    e.rect = function (e, t) {
+      var i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 1,
+          r = h(e.x, t, i, "width") || h(e.left, t, i, "width"),
+          a = h(e.y, t, i, "height") || h(e.top, t, i, "height"),
+          n = h(e.width, t, i, "width"),
+          o = h(e.height, t, i, "height"),
+          c = h(e.right, t, i, "width"),
+          s = h(e.bottom, t, i, "height");
+      return u(a) || (a = u(o) && u(s) ? t.height - o - s : s), u(r) || (r = u(n) && u(c) ? t.width - n - c : c), u(n) || (n = u(r) && u(c) ? t.width - r - c : 0), u(o) || (o = u(a) && u(s) ? t.height - a - s : 0), {
+        x: r || 0,
+        y: a || 0,
+        width: n || 0,
+        height: o || 0
+      };
+    }(i, r, a), e.styles = function (e, t, i) {
+      var r = e.borderStyle || e.lineStyle || "solid",
+          a = e.backgroundColor || e.fontColor || "transparent",
+          n = e.borderColor || e.lineColor || "transparent",
+          o = h(e.borderWidth || e.lineWidth, t, i);
+      return {
+        "stroke-linecap": e.lineCap || "round",
+        "stroke-linejoin": e.lineJoin || "round",
+        "stroke-width": o || 0,
+        "stroke-dasharray": "string" == typeof r ? "" : r.map(function (e) {
+          return h(e, t, i);
+        }).join(","),
+        stroke: n,
+        fill: a,
+        opacity: e.opacity || 1
+      };
+    }(i, r, a), y[t](e, i, r, a);
+  },
+      v = ["x", "y", "left", "top", "right", "bottom", "width", "height"],
+      w = function w(e) {
+    var t = i(e, 2),
+        r = t[0],
+        a = t[1];
+    return [r, Object.assign({
+      zIndex: 0
+    }, a, v.reduce(function (e, t) {
+      var i;
+      return e[t] = "string" == typeof (i = a[t]) && /%/.test(i) ? parseFloat(i) / 100 : i, e;
+    }, {}))];
+  },
+      _ = function _(e, t) {
+    return e[1].zIndex > t[1].zIndex ? 1 : e[1].zIndex < t[1].zIndex ? -1 : 0;
+  },
+      I = function I(e) {
+    return e.utils.createView({
+      name: "image-preview-markup",
+      tag: "svg",
+      ignoreRect: !0,
+      mixins: {
+        apis: ["width", "height", "crop", "markup", "resize", "dirty"]
+      },
+      write: function write(e) {
+        var t = e.root,
+            r = e.props;
+
+        if (r.dirty) {
+          var a = r.crop,
+              n = r.resize,
+              o = r.markup,
+              c = r.width,
+              s = r.height,
+              h = a.width,
+              u = a.height;
+
+          if (n) {
+            var l = n.size,
+                d = l && l.width,
+                f = l && l.height,
+                g = n.mode,
+                p = n.upscale;
+            d && !f && (f = d), f && !d && (d = f);
+            var y = h < d && u < f;
+
+            if (!y || y && p) {
+              var v,
+                  I = d / h,
+                  M = f / u;
+              if ("force" === g) h = d, u = f;else "cover" === g ? v = Math.max(I, M) : "contain" === g && (v = Math.min(I, M)), h *= v, u *= v;
+            }
+          }
+
+          var x = {
+            width: c,
+            height: s
+          };
+          t.element.setAttribute("width", x.width), t.element.setAttribute("height", x.height);
+          var T = Math.min(c / h, s / u);
+          t.element.innerHTML = "";
+          var A = t.query("GET_IMAGE_PREVIEW_MARKUP_FILTER");
+          o.filter(A).map(w).sort(_).forEach(function (e) {
+            var r = i(e, 2),
+                a = r[0],
+                n = r[1],
+                o = function (e, t) {
+              return m[e](t);
+            }(a, n);
+
+            E(o, a, n, x, T), t.element.appendChild(o);
+          });
+        }
+      }
+    });
+  },
+      M = function M(e, t) {
+    return {
+      x: e,
+      y: t
+    };
+  },
+      x = function x(e, t) {
+    return M(e.x - t.x, e.y - t.y);
+  },
+      T = function T(e, t) {
+    return Math.sqrt(function (e, t) {
+      return function (e, t) {
+        return e.x * t.x + e.y * t.y;
+      }(x(e, t), x(e, t));
+    }(e, t));
+  },
+      A = function A(e, t) {
+    var i = e,
+        r = t,
+        a = 1.5707963267948966 - t,
+        n = Math.sin(1.5707963267948966),
+        o = Math.sin(r),
+        c = Math.sin(a),
+        s = Math.cos(a),
+        h = i / n;
+    return M(s * (h * o), s * (h * c));
+  },
+      R = function R(e, t, i, r) {
+    var a = r.x > .5 ? 1 - r.x : r.x,
+        n = r.y > .5 ? 1 - r.y : r.y,
+        o = 2 * a * e.width,
+        c = 2 * n * e.height,
+        s = function (e, t) {
+      var i = e.width,
+          r = e.height,
+          a = A(i, t),
+          n = A(r, t),
+          o = M(e.x + Math.abs(a.x), e.y - Math.abs(a.y)),
+          c = M(e.x + e.width + Math.abs(n.y), e.y + Math.abs(n.x)),
+          s = M(e.x - Math.abs(n.y), e.y + e.height - Math.abs(n.x));
+      return {
+        width: T(o, c),
+        height: T(o, s)
+      };
+    }(t, i);
+
+    return Math.max(s.width / o, s.height / c);
+  },
+      P = function P(e, t) {
+    var i = e.width,
+        r = i * t;
+    return r > e.height && (i = (r = e.height) / t), {
+      x: .5 * (e.width - i),
+      y: .5 * (e.height - r),
+      width: i,
+      height: r
+    };
+  },
+      C = function C(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+        i = t.zoom,
+        r = t.rotation,
+        a = t.center,
+        n = t.aspectRatio;
+    n || (n = e.height / e.width);
+
+    var o = function (e, t) {
+      var i = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 1,
+          r = e.height / e.width,
+          a = t,
+          n = 1,
+          o = r;
+      o > a && (n = (o = a) / r);
+      var c = Math.max(1 / n, a / o),
+          s = e.width / (i * c * n);
+      return {
+        width: s,
+        height: s * t
+      };
+    }(e, n, i),
+        c = {
+      x: .5 * o.width,
+      y: .5 * o.height
+    },
+        s = {
+      x: 0,
+      y: 0,
+      width: o.width,
+      height: o.height,
+      center: c
+    },
+        h = void 0 === t.scaleToFit || t.scaleToFit,
+        u = i * R(e, P(s, n), r, h ? a : {
+      x: .5,
+      y: .5
+    });
+
+    return {
+      widthFloat: o.width / u,
+      heightFloat: o.height / u,
+      width: Math.round(o.width / u),
+      height: Math.round(o.height / u)
+    };
+  },
+      k = {
+    type: "spring",
+    stiffness: .5,
+    damping: .45,
+    mass: 10
+  },
+      D = function D(e) {
+    return e.utils.createView({
+      name: "image-clip",
+      tag: "div",
+      ignoreRect: !0,
+      mixins: {
+        apis: ["crop", "markup", "resize", "width", "height", "dirty", "background"],
+        styles: ["width", "height", "opacity"],
+        animations: {
+          opacity: {
+            type: "tween",
+            duration: 250
+          }
+        }
+      },
+      didWriteView: function didWriteView(e) {
+        var t = e.root,
+            i = e.props;
+        i.background && (t.element.style.backgroundColor = i.background);
+      },
+      create: function create(t) {
+        var i = t.root,
+            r = t.props;
+        i.ref.image = i.appendChildView(i.createChildView(function (e) {
+          return e.utils.createView({
+            name: "image-canvas-wrapper",
+            tag: "div",
+            ignoreRect: !0,
+            mixins: {
+              apis: ["crop", "width", "height"],
+              styles: ["originX", "originY", "translateX", "translateY", "scaleX", "scaleY", "rotateZ"],
+              animations: {
+                originX: k,
+                originY: k,
+                scaleX: k,
+                scaleY: k,
+                translateX: k,
+                translateY: k,
+                rotateZ: k
+              }
+            },
+            create: function create(t) {
+              var i = t.root,
+                  r = t.props;
+              r.width = r.image.width, r.height = r.image.height, i.ref.bitmap = i.appendChildView(i.createChildView(function (e) {
+                return e.utils.createView({
+                  name: "image-bitmap",
+                  ignoreRect: !0,
+                  mixins: {
+                    styles: ["scaleX", "scaleY"]
+                  },
+                  create: function create(e) {
+                    var t = e.root,
+                        i = e.props;
+                    t.appendChild(i.image);
+                  }
+                });
+              }(e), {
+                image: r.image
+              }));
+            },
+            write: function write(e) {
+              var t = e.root,
+                  i = e.props.crop.flip,
+                  r = t.ref.bitmap;
+              r.scaleX = i.horizontal ? -1 : 1, r.scaleY = i.vertical ? -1 : 1;
+            }
+          });
+        }(e), Object.assign({}, r))), i.ref.createMarkup = function () {
+          i.ref.markup || (i.ref.markup = i.appendChildView(i.createChildView(I(e), Object.assign({}, r))));
+        }, i.ref.destroyMarkup = function () {
+          i.ref.markup && (i.removeChildView(i.ref.markup), i.ref.markup = null);
+        };
+        var a = i.query("GET_IMAGE_PREVIEW_TRANSPARENCY_INDICATOR");
+        null !== a && (i.element.dataset.transparencyIndicator = "grid" === a ? a : "color");
+      },
+      write: function write(e) {
+        var t = e.root,
+            i = e.props,
+            r = e.shouldOptimize,
+            a = i.crop,
+            n = i.markup,
+            o = i.resize,
+            c = i.dirty,
+            s = i.width,
+            h = i.height;
+        t.ref.image.crop = a;
+        var u = {
+          x: 0,
+          y: 0,
+          width: s,
+          height: h,
+          center: {
+            x: .5 * s,
+            y: .5 * h
+          }
+        },
+            l = {
+          width: t.ref.image.width,
+          height: t.ref.image.height
+        },
+            d = {
+          x: a.center.x * l.width,
+          y: a.center.y * l.height
+        },
+            f = {
+          x: u.center.x - l.width * a.center.x,
+          y: u.center.y - l.height * a.center.y
+        },
+            g = 2 * Math.PI + a.rotation % (2 * Math.PI),
+            p = a.aspectRatio || l.height / l.width,
+            m = void 0 === a.scaleToFit || a.scaleToFit,
+            y = R(l, P(u, p), g, m ? a.center : {
+          x: .5,
+          y: .5
+        }),
+            E = a.zoom * y;
+        n && n.length ? (t.ref.createMarkup(), t.ref.markup.width = s, t.ref.markup.height = h, t.ref.markup.resize = o, t.ref.markup.dirty = c, t.ref.markup.markup = n, t.ref.markup.crop = C(l, a)) : t.ref.markup && t.ref.destroyMarkup();
+        var v = t.ref.image;
+        if (r) return v.originX = null, v.originY = null, v.translateX = null, v.translateY = null, v.rotateZ = null, v.scaleX = null, void (v.scaleY = null);
+        v.originX = d.x, v.originY = d.y, v.translateX = f.x, v.translateY = f.y, v.rotateZ = g, v.scaleX = E, v.scaleY = E;
+      }
+    });
+  },
+      G = '<svg width="500" height="200" viewBox="0 0 500 200" preserveAspectRatio="none">\n    <defs>\n        <radialGradient id="gradient-__UID__" cx=".5" cy="1.25" r="1.15">\n            <stop offset=\'50%\' stop-color=\'#000000\'/>\n            <stop offset=\'56%\' stop-color=\'#0a0a0a\'/>\n            <stop offset=\'63%\' stop-color=\'#262626\'/>\n            <stop offset=\'69%\' stop-color=\'#4f4f4f\'/>\n            <stop offset=\'75%\' stop-color=\'#808080\'/>\n            <stop offset=\'81%\' stop-color=\'#b1b1b1\'/>\n            <stop offset=\'88%\' stop-color=\'#dadada\'/>\n            <stop offset=\'94%\' stop-color=\'#f6f6f6\'/>\n            <stop offset=\'100%\' stop-color=\'#ffffff\'/>\n        </radialGradient>\n        <mask id="mask-__UID__">\n            <rect x="0" y="0" width="500" height="200" fill="url(#gradient-__UID__)"></rect>\n        </mask>\n    </defs>\n    <rect x="0" width="500" height="200" fill="currentColor" mask="url(#mask-__UID__)"></rect>\n</svg>',
+      V = !1,
+      O = 0,
+      b = function b() {
+    self.onmessage = function (e) {
+      createImageBitmap(e.data.message.file).then(function (t) {
+        self.postMessage({
+          id: e.data.id,
+          message: t
+        }, [t]);
+      });
+    };
+  },
+      S = function S() {
+    self.onmessage = function (e) {
+      for (var t = e.data.message.imageData, i = e.data.message.colorMatrix, r = t.data, a = r.length, n = i[0], o = i[1], c = i[2], s = i[3], h = i[4], u = i[5], l = i[6], d = i[7], f = i[8], g = i[9], p = i[10], m = i[11], y = i[12], E = i[13], v = i[14], w = i[15], _ = i[16], I = i[17], M = i[18], x = i[19], T = 0, A = 0, R = 0, P = 0, C = 0; T < a; T += 4) {
+        A = r[T] / 255, R = r[T + 1] / 255, P = r[T + 2] / 255, C = r[T + 3] / 255, r[T] = Math.max(0, Math.min(255 * (A * n + R * o + P * c + C * s + h), 255)), r[T + 1] = Math.max(0, Math.min(255 * (A * u + R * l + P * d + C * f + g), 255)), r[T + 2] = Math.max(0, Math.min(255 * (A * p + R * m + P * y + C * E + v), 255)), r[T + 3] = Math.max(0, Math.min(255 * (A * w + R * _ + P * I + C * M + x), 255));
+      }
+
+      self.postMessage({
+        id: e.data.id,
+        message: t
+      }, [t.data.buffer]);
+    };
+  },
+      L = {
+    1: function _() {
+      return [1, 0, 0, 1, 0, 0];
+    },
+    2: function _(e) {
+      return [-1, 0, 0, 1, e, 0];
+    },
+    3: function _(e, t) {
+      return [-1, 0, 0, -1, e, t];
+    },
+    4: function _(e, t) {
+      return [1, 0, 0, -1, 0, t];
+    },
+    5: function _() {
+      return [0, 1, 1, 0, 0, 0];
+    },
+    6: function _(e, t) {
+      return [0, 1, -1, 0, t, 0];
+    },
+    7: function _(e, t) {
+      return [0, -1, -1, 0, t, e];
+    },
+    8: function _(e) {
+      return [0, -1, 1, 0, 0, e];
+    }
+  },
+      N = function N(e, t, i, r) {
+    t = Math.round(t), i = Math.round(i);
+    var a = document.createElement("canvas");
+    a.width = t, a.height = i;
+    var n = a.getContext("2d");
+
+    if (r >= 5 && r <= 8) {
+      var o = [i, t];
+      t = o[0], i = o[1];
+    }
+
+    return function (e, t, i, r) {
+      -1 !== r && e.transform.apply(e, L[r](t, i));
+    }(n, t, i, r), n.drawImage(e, 0, 0, t, i), a;
+  },
+      W = function W(e) {
+    return /^image/.test(e.type) && !/svg/.test(e.type);
+  },
+      z = function z(e) {
+    var t = Math.min(10 / e.width, 10 / e.height),
+        i = document.createElement("canvas"),
+        r = i.getContext("2d"),
+        a = i.width = Math.ceil(e.width * t),
+        n = i.height = Math.ceil(e.height * t);
+    r.drawImage(e, 0, 0, a, n);
+    var o = null;
+
+    try {
+      o = r.getImageData(0, 0, a, n).data;
+    } catch (e) {
+      return null;
+    }
+
+    for (var c = o.length, s = 0, h = 0, u = 0, l = 0; l < c; l += 4) {
+      s += o[l] * o[l], h += o[l + 1] * o[l + 1], u += o[l + 2] * o[l + 2];
+    }
+
+    return {
+      r: s = H(s, c),
+      g: h = H(h, c),
+      b: u = H(u, c)
+    };
+  },
+      H = function H(e, t) {
+    return Math.floor(Math.sqrt(e / (t / 4)));
+  },
+      q = function q(e) {
+    var t = e.utils.createView({
+      name: "image-preview-overlay",
+      tag: "div",
+      ignoreRect: !0,
+      create: function create(e) {
+        var t = e.root,
+            i = e.props;
+        !V && document.querySelector("base") && (G = G.replace(/url\(\#/g, "url(" + window.location.href.replace(window.location.hash, "") + "#"), V = !0), O++, t.element.classList.add("filepond--image-preview-overlay-".concat(i.status)), t.element.innerHTML = G.replace(/__UID__/g, O);
+      },
+      mixins: {
+        styles: ["opacity"],
+        animations: {
+          opacity: {
+            type: "spring",
+            mass: 25
+          }
+        }
+      }
+    }),
+        i = function (e) {
+      return e.utils.createView({
+        name: "image-preview",
+        tag: "div",
+        ignoreRect: !0,
+        mixins: {
+          apis: ["image", "crop", "markup", "resize", "dirty", "background"],
+          styles: ["translateY", "scaleX", "scaleY", "opacity"],
+          animations: {
+            scaleX: k,
+            scaleY: k,
+            translateY: k,
+            opacity: {
+              type: "tween",
+              duration: 400
+            }
+          }
+        },
+        create: function create(t) {
+          var i = t.root,
+              r = t.props;
+          i.ref.clip = i.appendChildView(i.createChildView(D(e), {
+            id: r.id,
+            image: r.image,
+            crop: r.crop,
+            markup: r.markup,
+            resize: r.resize,
+            dirty: r.dirty,
+            background: r.background
+          }));
+        },
+        write: function write(e) {
+          var t = e.root,
+              i = e.props,
+              r = e.shouldOptimize,
+              a = t.ref.clip,
+              n = i.image,
+              o = i.crop,
+              c = i.markup,
+              s = i.resize,
+              h = i.dirty;
+
+          if (a.crop = o, a.markup = c, a.resize = s, a.dirty = h, a.opacity = r ? 0 : 1, !r && !t.rect.element.hidden) {
+            var u = n.height / n.width,
+                l = o.aspectRatio || u,
+                d = t.rect.inner.width,
+                f = t.rect.inner.height,
+                g = t.query("GET_IMAGE_PREVIEW_HEIGHT"),
+                p = t.query("GET_IMAGE_PREVIEW_MIN_HEIGHT"),
+                m = t.query("GET_IMAGE_PREVIEW_MAX_HEIGHT"),
+                y = t.query("GET_PANEL_ASPECT_RATIO"),
+                E = t.query("GET_ALLOW_MULTIPLE");
+            y && !E && (g = d * y, l = y);
+            var v = null !== g ? g : Math.max(p, Math.min(d * l, m)),
+                w = v / l;
+            w > d && (v = (w = d) * l), v > f && (v = f, w = f / l), a.width = w, a.height = v;
+          }
+        }
+      });
+    }(e),
+        r = e.utils.createWorker,
+        a = function a(e, t, i) {
+      return new Promise(function (a) {
+        e.ref.imageData || (e.ref.imageData = i.getContext("2d").getImageData(0, 0, i.width, i.height));
+
+        var n = function (e) {
+          var t;
+
+          try {
+            t = new ImageData(e.width, e.height);
+          } catch (i) {
+            t = document.createElement("canvas").getContext("2d").createImageData(e.width, e.height);
+          }
+
+          return t.data.set(new Uint8ClampedArray(e.data)), t;
+        }(e.ref.imageData);
+
+        if (!t || 20 !== t.length) return i.getContext("2d").putImageData(n, 0, 0), a();
+        var o = r(S);
+        o.post({
+          imageData: n,
+          colorMatrix: t
+        }, function (e) {
+          i.getContext("2d").putImageData(e, 0, 0), o.terminate(), a();
+        }, [n.data.buffer]);
+      });
+    },
+        n = function n(e) {
+      var t = e.root,
+          r = e.props,
+          a = e.image,
+          n = r.id,
+          o = t.query("GET_ITEM", {
+        id: n
+      });
+
+      if (o) {
+        var c,
+            s,
+            h = o.getMetadata("crop") || {
+          center: {
+            x: .5,
+            y: .5
+          },
+          flip: {
+            horizontal: !1,
+            vertical: !1
+          },
+          zoom: 1,
+          rotation: 0,
+          aspectRatio: null
+        },
+            u = t.query("GET_IMAGE_TRANSFORM_CANVAS_BACKGROUND_COLOR"),
+            l = !1;
+        t.query("GET_IMAGE_PREVIEW_MARKUP_SHOW") && (c = o.getMetadata("markup") || [], s = o.getMetadata("resize"), l = !0);
+        var d = t.appendChildView(t.createChildView(i, {
+          id: n,
+          image: a,
+          crop: h,
+          resize: s,
+          markup: c,
+          dirty: l,
+          background: u,
+          opacity: 0,
+          scaleX: 1.15,
+          scaleY: 1.15,
+          translateY: 15
+        }), t.childViews.length);
+        t.ref.images.push(d), d.opacity = 1, d.scaleX = 1, d.scaleY = 1, d.translateY = 0, setTimeout(function () {
+          t.dispatch("DID_IMAGE_PREVIEW_SHOW", {
+            id: n
+          });
+        }, 250);
+      }
+    },
+        o = function o(e) {
+      var t = e.root;
+      t.ref.overlayShadow.opacity = 1, t.ref.overlayError.opacity = 0, t.ref.overlaySuccess.opacity = 0;
+    },
+        c = function c(e) {
+      var t = e.root;
+      t.ref.overlayShadow.opacity = .25, t.ref.overlayError.opacity = 1;
+    };
+
+    return e.utils.createView({
+      name: "image-preview-wrapper",
+      create: function create(e) {
+        var i = e.root;
+        i.ref.images = [], i.ref.imageData = null, i.ref.imageViewBin = [], i.ref.overlayShadow = i.appendChildView(i.createChildView(t, {
+          opacity: 0,
+          status: "idle"
+        })), i.ref.overlaySuccess = i.appendChildView(i.createChildView(t, {
+          opacity: 0,
+          status: "success"
+        })), i.ref.overlayError = i.appendChildView(i.createChildView(t, {
+          opacity: 0,
+          status: "failure"
+        }));
+      },
+      styles: ["height"],
+      apis: ["height"],
+      destroy: function destroy(e) {
+        e.root.ref.images.forEach(function (e) {
+          e.image.width = 1, e.image.height = 1;
+        });
+      },
+      didWriteView: function didWriteView(e) {
+        e.root.ref.images.forEach(function (e) {
+          e.dirty = !1;
+        });
+      },
+      write: e.utils.createRoute({
+        DID_IMAGE_PREVIEW_DRAW: function DID_IMAGE_PREVIEW_DRAW(e) {
+          var t = e.root,
+              i = t.ref.images[t.ref.images.length - 1];
+          i.translateY = 0, i.scaleX = 1, i.scaleY = 1, i.opacity = 1;
+        },
+        DID_IMAGE_PREVIEW_CONTAINER_CREATE: function DID_IMAGE_PREVIEW_CONTAINER_CREATE(e) {
+          var t = e.root,
+              i = e.props.id,
+              r = t.query("GET_ITEM", i);
+
+          if (r) {
+            var a,
+                n,
+                o,
+                c = URL.createObjectURL(r.file);
+            a = c, n = function n(e, r) {
+              t.dispatch("DID_IMAGE_PREVIEW_CALCULATE_SIZE", {
+                id: i,
+                width: e,
+                height: r
+              });
+            }, (o = new Image()).onload = function () {
+              var e = o.naturalWidth,
+                  t = o.naturalHeight;
+              o = null, n(e, t);
+            }, o.src = a;
+          }
+        },
+        DID_FINISH_CALCULATE_PREVIEWSIZE: function DID_FINISH_CALCULATE_PREVIEWSIZE(e) {
+          var t = e.root,
+              i = e.props,
+              o = i.id,
+              c = t.query("GET_ITEM", o);
+
+          if (c) {
+            var s,
+                h = URL.createObjectURL(c.file),
+                u = function u() {
+              var e;
+              (e = h, new Promise(function (t, i) {
+                var r = new Image();
+                r.crossOrigin = "Anonymous", r.onload = function () {
+                  t(r);
+                }, r.onerror = function (e) {
+                  i(e);
+                }, r.src = e;
+              })).then(l);
+            },
+                l = function l(e) {
+              URL.revokeObjectURL(h);
+              var r = (c.getMetadata("exif") || {}).orientation || -1,
+                  o = e.width,
+                  s = e.height;
+
+              if (r >= 5 && r <= 8) {
+                var u = [s, o];
+                o = u[0], s = u[1];
+              }
+
+              var l = Math.max(1, .75 * window.devicePixelRatio),
+                  d = t.query("GET_IMAGE_PREVIEW_ZOOM_FACTOR") * l,
+                  f = s / o,
+                  g = t.rect.element.width,
+                  p = t.rect.element.height,
+                  m = g,
+                  y = m * f;
+              f > 1 ? y = (m = Math.min(o, g * d)) * f : m = (y = Math.min(s, p * d)) / f;
+
+              var E = N(e, m, y, r),
+                  v = function v() {
+                var r = t.query("GET_IMAGE_PREVIEW_CALCULATE_AVERAGE_IMAGE_COLOR") ? z(data) : null;
+                c.setMetadata("color", r, !0), "close" in e && e.close(), t.ref.overlayShadow.opacity = 1, n({
+                  root: t,
+                  props: i,
+                  image: E
+                });
+              },
+                  w = c.getMetadata("filter");
+
+              w ? a(t, w, E).then(v) : v();
+            };
+
+            if (s = c.file, "createImageBitmap" in window && W(s)) {
+              var d = r(b);
+              d.post({
+                file: c.file
+              }, function (e) {
+                d.terminate(), e ? l(e) : u();
+              });
+            } else u();
+          }
+        },
+        DID_UPDATE_ITEM_METADATA: function DID_UPDATE_ITEM_METADATA(e) {
+          var t = e.root,
+              i = e.props,
+              r = e.action;
+
+          if (/crop|filter|markup|resize/.test(r.change.key) && t.ref.images.length) {
+            var o = t.query("GET_ITEM", {
+              id: i.id
+            });
+            if (o) if (/filter/.test(r.change.key)) {
+              var c = t.ref.images[t.ref.images.length - 1];
+              a(t, r.change.value, c.image);
+            } else {
+              if (/crop|markup|resize/.test(r.change.key)) {
+                var s = o.getMetadata("crop"),
+                    h = t.ref.images[t.ref.images.length - 1];
+
+                if (Math.abs(s.aspectRatio - h.crop.aspectRatio) > 1e-5) {
+                  var u = function (e) {
+                    var t = e.root,
+                        i = t.ref.images.shift();
+                    return i.opacity = 0, i.translateY = -15, t.ref.imageViewBin.push(i), i;
+                  }({
+                    root: t
+                  });
+
+                  n({
+                    root: t,
+                    props: i,
+                    image: (l = u.image, (d = d || document.createElement("canvas")).width = l.width, d.height = l.height, d.getContext("2d").drawImage(l, 0, 0), d)
+                  });
+                } else !function (e) {
+                  var t = e.root,
+                      i = e.props,
+                      r = t.query("GET_ITEM", {
+                    id: i.id
+                  });
+
+                  if (r) {
+                    var a = t.ref.images[t.ref.images.length - 1];
+                    a.crop = r.getMetadata("crop"), a.background = t.query("GET_IMAGE_TRANSFORM_CANVAS_BACKGROUND_COLOR"), t.query("GET_IMAGE_PREVIEW_MARKUP_SHOW") && (a.dirty = !0, a.resize = r.getMetadata("resize"), a.markup = r.getMetadata("markup"));
+                  }
+                }({
+                  root: t,
+                  props: i
+                });
+              }
+
+              var l, d;
+            }
+          }
+        },
+        DID_THROW_ITEM_LOAD_ERROR: c,
+        DID_THROW_ITEM_PROCESSING_ERROR: c,
+        DID_THROW_ITEM_INVALID: c,
+        DID_COMPLETE_ITEM_PROCESSING: function DID_COMPLETE_ITEM_PROCESSING(e) {
+          var t = e.root;
+          t.ref.overlayShadow.opacity = .25, t.ref.overlaySuccess.opacity = 1;
+        },
+        DID_START_ITEM_PROCESSING: o,
+        DID_REVERT_ITEM_PROCESSING: o
+      }, function (e) {
+        var t = e.root,
+            i = t.ref.imageViewBin.filter(function (e) {
+          return 0 === e.opacity;
+        });
+        t.ref.imageViewBin = t.ref.imageViewBin.filter(function (e) {
+          return e.opacity > 0;
+        }), i.forEach(function (e) {
+          return function (e, t) {
+            e.removeChildView(t), t.image.width = 1, t.image.height = 1, t._destroy();
+          }(t, e);
+        }), i.length = 0;
+      })
+    });
+  },
+      U = function U(e) {
+    var t = e.addFilter,
+        i = e.utils,
+        r = i.Type,
+        a = i.createRoute,
+        n = i.isFile,
+        o = q(e);
+    return t("CREATE_VIEW", function (e) {
+      var t = e.is,
+          i = e.view,
+          r = e.query;
+
+      if (t("file") && r("GET_ALLOW_IMAGE_PREVIEW")) {
+        var c = function c(e) {
+          e.root.ref.shouldRescale = !0;
+        };
+
+        i.registerWriter(a({
+          DID_RESIZE_ROOT: c,
+          DID_STOP_RESIZE: c,
+          DID_LOAD_ITEM: function DID_LOAD_ITEM(e) {
+            var t = e.root,
+                a = e.props.id,
+                c = r("GET_ITEM", a);
+
+            if (c && n(c.file) && !c.archived) {
+              var s = c.file;
+
+              if (function (e) {
+                return /^image/.test(e.type);
+              }(s) && r("GET_IMAGE_PREVIEW_FILTER_ITEM")(c)) {
+                var h = "createImageBitmap" in (window || {}),
+                    u = r("GET_IMAGE_PREVIEW_MAX_FILE_SIZE");
+
+                if (!(!h && u && s.size > u)) {
+                  t.ref.imagePreview = i.appendChildView(i.createChildView(o, {
+                    id: a
+                  }));
+                  var l = t.query("GET_IMAGE_PREVIEW_HEIGHT");
+                  l && t.dispatch("DID_UPDATE_PANEL_HEIGHT", {
+                    id: c.id,
+                    height: l
+                  });
+                  var d = !h && s.size > r("GET_IMAGE_PREVIEW_MAX_INSTANT_PREVIEW_FILE_SIZE");
+                  t.dispatch("DID_IMAGE_PREVIEW_CONTAINER_CREATE", {
+                    id: a
+                  }, d);
+                }
+              }
+            }
+          },
+          DID_IMAGE_PREVIEW_CALCULATE_SIZE: function DID_IMAGE_PREVIEW_CALCULATE_SIZE(e) {
+            var t = e.root,
+                i = e.action;
+            t.ref.imageWidth = i.width, t.ref.imageHeight = i.height, t.ref.shouldRescale = !0, t.ref.shouldDrawPreview = !0, t.dispatch("KICK");
+          },
+          DID_UPDATE_ITEM_METADATA: function DID_UPDATE_ITEM_METADATA(e) {
+            var t = e.root;
+            "crop" === e.action.change.key && (t.ref.shouldRescale = !0);
+          }
+        }, function (e) {
+          var t = e.root,
+              i = e.props;
+          t.ref.imagePreview && (t.rect.element.hidden || (t.ref.shouldRescale && (!function (e, t) {
+            if (e.ref.imagePreview) {
+              var i = t.id,
+                  r = e.query("GET_ITEM", {
+                id: i
+              });
+
+              if (r) {
+                var a = e.query("GET_PANEL_ASPECT_RATIO"),
+                    n = e.query("GET_ITEM_PANEL_ASPECT_RATIO"),
+                    o = e.query("GET_IMAGE_PREVIEW_HEIGHT");
+
+                if (!(a || n || o)) {
+                  var c = e.ref,
+                      s = c.imageWidth,
+                      h = c.imageHeight;
+
+                  if (s && h) {
+                    var u = e.query("GET_IMAGE_PREVIEW_MIN_HEIGHT"),
+                        l = e.query("GET_IMAGE_PREVIEW_MAX_HEIGHT"),
+                        d = (r.getMetadata("exif") || {}).orientation || -1;
+
+                    if (d >= 5 && d <= 8) {
+                      var f = [h, s];
+                      s = f[0], h = f[1];
+                    }
+
+                    if (!W(r.file) || e.query("GET_IMAGE_PREVIEW_UPSCALE")) {
+                      var g = 2048 / s;
+                      s *= g, h *= g;
+                    }
+
+                    var p = h / s,
+                        m = (r.getMetadata("crop") || {}).aspectRatio || p,
+                        y = Math.max(u, Math.min(h, l)),
+                        E = e.rect.element.width,
+                        v = Math.min(E * m, y);
+                    e.dispatch("DID_UPDATE_PANEL_HEIGHT", {
+                      id: r.id,
+                      height: v
+                    });
+                  }
+                }
+              }
+            }
+          }(t, i), t.ref.shouldRescale = !1), t.ref.shouldDrawPreview && (requestAnimationFrame(function () {
+            t.dispatch("DID_FINISH_CALCULATE_PREVIEWSIZE", {
+              id: i.id
+            });
+          }), t.ref.shouldDrawPreview = !1)));
+        }));
+      }
+    }), {
+      options: {
+        allowImagePreview: [!0, r.BOOLEAN],
+        imagePreviewFilterItem: [function () {
+          return !0;
+        }, r.FUNCTION],
+        imagePreviewHeight: [null, r.INT],
+        imagePreviewMinHeight: [44, r.INT],
+        imagePreviewMaxHeight: [256, r.INT],
+        imagePreviewMaxFileSize: [null, r.INT],
+        imagePreviewZoomFactor: [2, r.INT],
+        imagePreviewUpscale: [!1, r.BOOLEAN],
+        imagePreviewMaxInstantPreviewFileSize: [1e6, r.INT],
+        imagePreviewTransparencyIndicator: [null, r.STRING],
+        imagePreviewCalculateAverageImageColor: [!1, r.BOOLEAN],
+        imagePreviewMarkupShow: [!0, r.BOOLEAN],
+        imagePreviewMarkupFilter: [function () {
+          return !0;
+        }, r.FUNCTION]
+      }
+    };
+  };
+
+  return "undefined" != typeof window && void 0 !== window.document && document.dispatchEvent(new CustomEvent("FilePond:pluginloaded", {
+    detail: U
+  })), U;
+});
+
+/***/ }),
+
+/***/ "./resources/js/filepond.min.js":
+/*!**************************************!*\
+  !*** ./resources/js/filepond.min.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/*!
+ * FilePond 4.7.4
+ * Licensed under MIT, https://opensource.org/licenses/MIT/
+ * Please visit https://pqina.nl/filepond/ for details.
+ */
+
+/* eslint-disable */
+!function (e, t) {
+  "object" == ( false ? undefined : _typeof(exports)) && "undefined" != typeof module ? t(exports) :  true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (t),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : undefined;
+}(this, function (e) {
+  "use strict";
+
+  var t,
+      n,
+      r = function r(e, t) {
+    for (var n in e) {
+      e.hasOwnProperty(n) && t(n, e[n]);
+    }
+  },
+      o = function o(e) {
+    var t = {};
+    return r(e, function (n) {
+      !function (e, t, n) {
+        "function" != typeof n ? Object.defineProperty(e, t, Object.assign({}, n)) : e[t] = n;
+      }(t, n, e[n]);
+    }), t;
+  },
+      i = function i(e, t) {
+    var n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : null;
+    if (null === n) return e.getAttribute(t) || e.hasAttribute(t);
+    e.setAttribute(t, n);
+  },
+      a = ["svg", "path"],
+      s = function s(e) {
+    return a.includes(e);
+  },
+      u = function u(e, t) {
+    var n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
+    "object" == _typeof(t) && (n = t, t = null);
+    var o = s(e) ? document.createElementNS("http://www.w3.org/2000/svg", e) : document.createElement(e);
+    return t && (s(e) ? i(o, "class", t) : o.className = t), r(n, function (e, t) {
+      i(o, e, t);
+    }), o;
+  },
+      l = function l(e, t) {
+    return function (e, n) {
+      return void 0 !== n ? t.splice(n, 0, e) : t.push(e), e;
+    };
+  },
+      c = function c(e, t) {
+    return function (n) {
+      return t.splice(t.indexOf(n), 1), n.element.parentNode && e.removeChild(n.element), n;
+    };
+  },
+      f = function f(e, t, n, r) {
+    var o = n[0] || e.left,
+        i = n[1] || e.top,
+        a = o + e.width,
+        s = i + e.height * (r[1] || 1),
+        u = {
+      element: Object.assign({}, e),
+      inner: {
+        left: e.left,
+        top: e.top,
+        right: e.right,
+        bottom: e.bottom
+      },
+      outer: {
+        left: o,
+        top: i,
+        right: a,
+        bottom: s
+      }
+    };
+    return t.filter(function (e) {
+      return !e.isRectIgnored();
+    }).map(function (e) {
+      return e.rect;
+    }).forEach(function (e) {
+      d(u.inner, Object.assign({}, e.inner)), d(u.outer, Object.assign({}, e.outer));
+    }), p(u.inner), u.outer.bottom += u.element.marginBottom, u.outer.right += u.element.marginRight, p(u.outer), u;
+  },
+      d = function d(e, t) {
+    t.top += e.top, t.right += e.left, t.bottom += e.top, t.left += e.left, t.bottom > e.bottom && (e.bottom = t.bottom), t.right > e.right && (e.right = t.right);
+  },
+      p = function p(e) {
+    e.width = e.right - e.left, e.height = e.bottom - e.top;
+  },
+      E = function E(e) {
+    return "number" == typeof e;
+  },
+      _ = function _(e) {
+    return e < .5 ? 2 * e * e : (4 - 2 * e) * e - 1;
+  },
+      T = {
+    spring: function spring() {
+      var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+          t = e.stiffness,
+          n = void 0 === t ? .5 : t,
+          r = e.damping,
+          i = void 0 === r ? .75 : r,
+          a = e.mass,
+          s = void 0 === a ? 10 : a,
+          u = null,
+          l = null,
+          c = 0,
+          f = !1,
+          d = o({
+        interpolate: function interpolate() {
+          if (!f) {
+            if (!E(u) || !E(l)) return f = !0, void (c = 0);
+            !function (e, t, n) {
+              var r = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : .001;
+              return Math.abs(e - t) < r && Math.abs(n) < r;
+            }(l += c += -(l - u) * n / s, u, c *= i) ? d.onupdate(l) : (l = u, c = 0, f = !0, d.onupdate(l), d.oncomplete(l));
+          }
+        },
+        target: {
+          set: function set(e) {
+            if (E(e) && !E(l) && (l = e), null === u && (u = e, l = e), l === (u = e) || void 0 === u) return f = !0, c = 0, d.onupdate(l), void d.oncomplete(l);
+            f = !1;
+          },
+          get: function get() {
+            return u;
+          }
+        },
+        resting: {
+          get: function get() {
+            return f;
+          }
+        },
+        onupdate: function onupdate(e) {},
+        oncomplete: function oncomplete(e) {}
+      });
+      return d;
+    },
+    tween: function tween() {
+      var e,
+          t,
+          n = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+          r = n.duration,
+          i = void 0 === r ? 500 : r,
+          a = n.easing,
+          s = void 0 === a ? _ : a,
+          u = n.delay,
+          l = void 0 === u ? 0 : u,
+          c = null,
+          f = !0,
+          d = !1,
+          p = null,
+          E = o({
+        interpolate: function interpolate(n) {
+          f || null === p || (null === c && (c = n), n - c < l || ((e = n - c - l) < i ? (t = e / i, E.onupdate((e >= 0 ? s(d ? 1 - t : t) : 0) * p)) : (e = 1, t = d ? 0 : 1, E.onupdate(t * p), E.oncomplete(t * p), f = !0)));
+        },
+        target: {
+          get: function get() {
+            return d ? 0 : p;
+          },
+          set: function set(e) {
+            if (null === p) return p = e, E.onupdate(e), void E.oncomplete(e);
+            e < p ? (p = 1, d = !0) : (d = !1, p = e), f = !1, c = null;
+          }
+        },
+        resting: {
+          get: function get() {
+            return f;
+          }
+        },
+        onupdate: function onupdate(e) {},
+        oncomplete: function oncomplete(e) {}
+      });
+      return E;
+    }
+  },
+      I = function I(e, t, n) {
+    var r = e[t] && "object" == _typeof(e[t][n]) ? e[t][n] : e[t] || e,
+        o = "string" == typeof r ? r : r.type,
+        i = "object" == _typeof(r) ? Object.assign({}, r) : {};
+    return T[o] ? T[o](i) : null;
+  },
+      v = function v(e, t, n) {
+    var r = arguments.length > 3 && void 0 !== arguments[3] && arguments[3];
+    (t = Array.isArray(t) ? t : [t]).forEach(function (t) {
+      e.forEach(function (e) {
+        var o = e,
+            i = function i() {
+          return n[e];
+        },
+            a = function a(t) {
+          return n[e] = t;
+        };
+
+        "object" == _typeof(e) && (o = e.key, i = e.getter || i, a = e.setter || a), t[o] && !r || (t[o] = {
+          get: i,
+          set: a
+        });
+      });
+    });
+  },
+      m = function m(e) {
+    return null != e;
+  },
+      h = {
+    opacity: 1,
+    scaleX: 1,
+    scaleY: 1,
+    translateX: 0,
+    translateY: 0,
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    originX: 0,
+    originY: 0
+  },
+      g = function g(e, t) {
+    if (Object.keys(e).length !== Object.keys(t).length) return !0;
+
+    for (var n in t) {
+      if (t[n] !== e[n]) return !0;
+    }
+
+    return !1;
+  },
+      R = function R(e, t) {
+    var n = t.opacity,
+        r = t.perspective,
+        o = t.translateX,
+        i = t.translateY,
+        a = t.scaleX,
+        s = t.scaleY,
+        u = t.rotateX,
+        l = t.rotateY,
+        c = t.rotateZ,
+        f = t.originX,
+        d = t.originY,
+        p = t.width,
+        E = t.height,
+        _ = "",
+        T = "";
+    (m(f) || m(d)) && (T += "transform-origin: " + (f || 0) + "px " + (d || 0) + "px;"), m(r) && (_ += "perspective(" + r + "px) "), (m(o) || m(i)) && (_ += "translate3d(" + (o || 0) + "px, " + (i || 0) + "px, 0) "), (m(a) || m(s)) && (_ += "scale3d(" + (m(a) ? a : 1) + ", " + (m(s) ? s : 1) + ", 1) "), m(c) && (_ += "rotateZ(" + c + "rad) "), m(u) && (_ += "rotateX(" + u + "rad) "), m(l) && (_ += "rotateY(" + l + "rad) "), _.length && (T += "transform:" + _ + ";"), m(n) && (T += "opacity:" + n + ";", 0 === n && (T += "visibility:hidden;"), n < 1 && (T += "pointer-events:none;")), m(E) && (T += "height:" + E + "px;"), m(p) && (T += "width:" + p + "px;");
+    var I = e.elementCurrentStyle || "";
+    T.length === I.length && T === I || (e.style.cssText = T, e.elementCurrentStyle = T);
+  },
+      O = {
+    styles: function styles(e) {
+      var t = e.mixinConfig,
+          n = e.viewProps,
+          r = e.viewInternalAPI,
+          o = e.viewExternalAPI,
+          i = e.view,
+          a = Object.assign({}, n),
+          s = {};
+      v(t, [r, o], n);
+
+      var u = function u() {
+        return i.rect ? f(i.rect, i.childViews, [n.translateX || 0, n.translateY || 0], [n.scaleX || 0, n.scaleY || 0]) : null;
+      };
+
+      return r.rect = {
+        get: u
+      }, o.rect = {
+        get: u
+      }, t.forEach(function (e) {
+        n[e] = void 0 === a[e] ? h[e] : a[e];
+      }), {
+        write: function write() {
+          if (g(s, n)) return R(i.element, n), Object.assign(s, Object.assign({}, n)), !0;
+        },
+        destroy: function destroy() {}
+      };
+    },
+    listeners: function listeners(e) {
+      e.mixinConfig, e.viewProps, e.viewInternalAPI;
+
+      var t,
+          n = e.viewExternalAPI,
+          r = (e.viewState, e.view),
+          o = [],
+          i = (t = r.element, function (e, n) {
+        t.addEventListener(e, n);
+      }),
+          a = function (e) {
+        return function (t, n) {
+          e.removeEventListener(t, n);
+        };
+      }(r.element);
+
+      return n.on = function (e, t) {
+        o.push({
+          type: e,
+          fn: t
+        }), i(e, t);
+      }, n.off = function (e, t) {
+        o.splice(o.findIndex(function (n) {
+          return n.type === e && n.fn === t;
+        }), 1), a(e, t);
+      }, {
+        write: function write() {
+          return !0;
+        },
+        destroy: function destroy() {
+          o.forEach(function (e) {
+            a(e.type, e.fn);
+          });
+        }
+      };
+    },
+    animations: function animations(e) {
+      var t = e.mixinConfig,
+          n = e.viewProps,
+          o = e.viewInternalAPI,
+          i = e.viewExternalAPI,
+          a = (e.viewState, Object.assign({}, n)),
+          s = [];
+      return r(t, function (e, t) {
+        var r = I(t);
+        r && (r.onupdate = function (t) {
+          n[e] = t;
+        }, r.target = a[e], v([{
+          key: e,
+          setter: function setter(e) {
+            r.target !== e && (r.target = e);
+          },
+          getter: function getter() {
+            return n[e];
+          }
+        }], [o, i], n, !0), s.push(r));
+      }), {
+        write: function write(e) {
+          var t = !0;
+          return s.forEach(function (n) {
+            n.resting || (t = !1), n.interpolate(e);
+          }), t;
+        },
+        destroy: function destroy() {}
+      };
+    },
+    apis: function apis(e) {
+      var t = e.mixinConfig,
+          n = e.viewProps,
+          r = e.viewExternalAPI;
+      v(t, r, n);
+    }
+  },
+      y = function y() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+        t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+        n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
+    return t.layoutCalculated || (e.paddingTop = parseInt(n.paddingTop, 10) || 0, e.marginTop = parseInt(n.marginTop, 10) || 0, e.marginRight = parseInt(n.marginRight, 10) || 0, e.marginBottom = parseInt(n.marginBottom, 10) || 0, e.marginLeft = parseInt(n.marginLeft, 10) || 0, t.layoutCalculated = !0), e.left = t.offsetLeft || 0, e.top = t.offsetTop || 0, e.width = t.offsetWidth || 0, e.height = t.offsetHeight || 0, e.right = e.left + e.width, e.bottom = e.top + e.height, e.scrollTop = t.scrollTop, e.hidden = null === t.offsetParent, e;
+  },
+      D = function D() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+        t = e.tag,
+        n = void 0 === t ? "div" : t,
+        r = e.name,
+        i = void 0 === r ? null : r,
+        a = e.attributes,
+        s = void 0 === a ? {} : a,
+        d = e.read,
+        p = void 0 === d ? function () {} : d,
+        E = e.write,
+        _ = void 0 === E ? function () {} : E,
+        T = e.create,
+        I = void 0 === T ? function () {} : T,
+        v = e.destroy,
+        m = void 0 === v ? function () {} : v,
+        h = e.filterFrameActionsForChild,
+        g = void 0 === h ? function (e, t) {
+      return t;
+    } : h,
+        R = e.didCreateView,
+        D = void 0 === R ? function () {} : R,
+        S = e.didWriteView,
+        A = void 0 === S ? function () {} : S,
+        b = e.ignoreRect,
+        L = void 0 !== b && b,
+        P = e.ignoreRectUpdate,
+        M = void 0 !== P && P,
+        w = e.mixins,
+        C = void 0 === w ? [] : w;
+
+    return function (e) {
+      var t,
+          r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+          a = u(n, "filepond--" + i, s),
+          d = window.getComputedStyle(a, null),
+          E = y(),
+          T = null,
+          v = !1,
+          h = [],
+          R = [],
+          S = {},
+          b = {},
+          P = [_],
+          w = [p],
+          N = [m],
+          G = function G() {
+        return a;
+      },
+          U = function U() {
+        return h.concat();
+      },
+          B = function B() {
+        return T || (T = f(E, h, [0, 0], [1, 1]));
+      },
+          F = {
+        element: {
+          get: G
+        },
+        style: {
+          get: function get() {
+            return d;
+          }
+        },
+        childViews: {
+          get: U
+        }
+      },
+          q = Object.assign({}, F, {
+        rect: {
+          get: B
+        },
+        ref: {
+          get: function get() {
+            return S;
+          }
+        },
+        is: function is(e) {
+          return i === e;
+        },
+        appendChild: (t = a, function (e, n) {
+          void 0 !== n && t.children[n] ? t.insertBefore(e, t.children[n]) : t.appendChild(e);
+        }),
+        createChildView: function (e) {
+          return function (t, n) {
+            return t(e, n);
+          };
+        }(e),
+        linkView: function linkView(e) {
+          return h.push(e), e;
+        },
+        unlinkView: function unlinkView(e) {
+          h.splice(h.indexOf(e), 1);
+        },
+        appendChildView: l(0, h),
+        removeChildView: c(a, h),
+        registerWriter: function registerWriter(e) {
+          return P.push(e);
+        },
+        registerReader: function registerReader(e) {
+          return w.push(e);
+        },
+        registerDestroyer: function registerDestroyer(e) {
+          return N.push(e);
+        },
+        invalidateLayout: function invalidateLayout() {
+          return a.layoutCalculated = !1;
+        },
+        dispatch: e.dispatch,
+        query: e.query
+      }),
+          V = {
+        element: {
+          get: G
+        },
+        childViews: {
+          get: U
+        },
+        rect: {
+          get: B
+        },
+        resting: {
+          get: function get() {
+            return v;
+          }
+        },
+        isRectIgnored: function isRectIgnored() {
+          return L;
+        },
+        _read: function _read() {
+          T = null, h.forEach(function (e) {
+            return e._read();
+          }), !(M && E.width && E.height) && y(E, a, d);
+          var e = {
+            root: Y,
+            props: r,
+            rect: E
+          };
+          w.forEach(function (t) {
+            return t(e);
+          });
+        },
+        _write: function _write(e, t, n) {
+          var o = 0 === t.length;
+          return P.forEach(function (i) {
+            !1 === i({
+              props: r,
+              root: Y,
+              actions: t,
+              timestamp: e,
+              shouldOptimize: n
+            }) && (o = !1);
+          }), R.forEach(function (t) {
+            !1 === t.write(e) && (o = !1);
+          }), h.filter(function (e) {
+            return !!e.element.parentNode;
+          }).forEach(function (r) {
+            r._write(e, g(r, t), n) || (o = !1);
+          }), h.forEach(function (r, i) {
+            r.element.parentNode || (Y.appendChild(r.element, i), r._read(), r._write(e, g(r, t), n), o = !1);
+          }), v = o, A({
+            props: r,
+            root: Y,
+            actions: t,
+            timestamp: e
+          }), o;
+        },
+        _destroy: function _destroy() {
+          R.forEach(function (e) {
+            return e.destroy();
+          }), N.forEach(function (e) {
+            e({
+              root: Y,
+              props: r
+            });
+          }), h.forEach(function (e) {
+            return e._destroy();
+          });
+        }
+      },
+          x = Object.assign({}, F, {
+        rect: {
+          get: function get() {
+            return E;
+          }
+        }
+      });
+
+      Object.keys(C).sort(function (e, t) {
+        return "styles" === e ? 1 : "styles" === t ? -1 : 0;
+      }).forEach(function (e) {
+        var t = O[e]({
+          mixinConfig: C[e],
+          viewProps: r,
+          viewState: b,
+          viewInternalAPI: q,
+          viewExternalAPI: V,
+          view: o(x)
+        });
+        t && R.push(t);
+      });
+      var Y = o(q);
+      I({
+        root: Y,
+        props: r
+      });
+      var j = a.children.length;
+      return h.forEach(function (e, t) {
+        Y.appendChild(e.element, j + t);
+      }), D(Y), o(V);
+    };
+  },
+      S = function S(e, t) {
+    return function (n) {
+      var r = n.root,
+          o = n.props,
+          i = n.actions,
+          a = void 0 === i ? [] : i,
+          s = n.timestamp,
+          u = n.shouldOptimize;
+      a.filter(function (t) {
+        return e[t.type];
+      }).forEach(function (t) {
+        return e[t.type]({
+          root: r,
+          props: o,
+          action: t.data,
+          timestamp: s,
+          shouldOptimize: u
+        });
+      }), t && t({
+        root: r,
+        props: o,
+        actions: a,
+        timestamp: s,
+        shouldOptimize: u
+      });
+    };
+  },
+      A = function A(e, t) {
+    return t.parentNode.insertBefore(e, t);
+  },
+      b = function b(e, t) {
+    return t.parentNode.insertBefore(e, t.nextSibling);
+  },
+      L = function L(e) {
+    return Array.isArray(e);
+  },
+      P = function P(e) {
+    return null == e;
+  },
+      M = function M(e) {
+    return e.trim();
+  },
+      w = function w(e) {
+    return "" + e;
+  },
+      C = function C(e) {
+    return "boolean" == typeof e;
+  },
+      N = function N(e) {
+    return C(e) ? e : "true" === e;
+  },
+      G = function G(e) {
+    return "string" == typeof e;
+  },
+      U = function U(e) {
+    return E(e) ? e : G(e) ? w(e).replace(/[a-z]+/gi, "") : 0;
+  },
+      B = function B(e) {
+    return parseInt(U(e), 10);
+  },
+      F = function F(e) {
+    return parseFloat(U(e));
+  },
+      q = function q(e) {
+    return E(e) && isFinite(e) && Math.floor(e) === e;
+  },
+      V = function V(e) {
+    if (q(e)) return e;
+    var t = w(e).trim();
+    return /MB$/i.test(t) ? (t = t.replace(/MB$i/, "").trim(), 1e3 * B(t) * 1e3) : /KB/i.test(t) ? (t = t.replace(/KB$i/, "").trim(), 1e3 * B(t)) : B(t);
+  },
+      x = function x(e) {
+    return "function" == typeof e;
+  },
+      Y = {
+    process: "POST",
+    patch: "PATCH",
+    revert: "DELETE",
+    fetch: "GET",
+    restore: "GET",
+    load: "GET"
+  },
+      j = function j(e, t, n, r, o) {
+    if (null === t) return null;
+    if ("function" == typeof t) return t;
+    var i = {
+      url: "GET" === n || "PATCH" === n ? "?" + e + "=" : "",
+      method: n,
+      headers: o,
+      withCredentials: !1,
+      timeout: r,
+      onload: null,
+      ondata: null,
+      onerror: null
+    };
+    if (G(t)) return i.url = t, i;
+
+    if (Object.assign(i, t), G(i.headers)) {
+      var a = i.headers.split(/:(.+)/);
+      i.headers = {
+        header: a[0],
+        value: a[1]
+      };
+    }
+
+    return i.withCredentials = N(i.withCredentials), i;
+  },
+      H = function H(e) {
+    return "object" == _typeof(e) && null !== e;
+  },
+      k = function k(e) {
+    return L(e) ? "array" : function (e) {
+      return null === e;
+    }(e) ? "null" : q(e) ? "int" : /^[0-9]+ ?(?:GB|MB|KB)$/gi.test(e) ? "bytes" : function (e) {
+      return H(e) && G(e.url) && H(e.process) && H(e.revert) && H(e.restore) && H(e.fetch);
+    }(e) ? "api" : _typeof(e);
+  },
+      X = {
+    array: function array(e) {
+      var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : ",";
+      return P(e) ? [] : L(e) ? e : w(e).split(t).map(M).filter(function (e) {
+        return e.length;
+      });
+    },
+    "boolean": N,
+    "int": function int(e) {
+      return "bytes" === k(e) ? V(e) : B(e);
+    },
+    number: F,
+    "float": F,
+    bytes: V,
+    string: function string(e) {
+      return x(e) ? e : w(e);
+    },
+    "function": function _function(e) {
+      return function (e) {
+        for (var t = self, n = e.split("."), r = null; r = n.shift();) {
+          if (!(t = t[r])) return null;
+        }
+
+        return t;
+      }(e);
+    },
+    serverapi: function serverapi(e) {
+      return (n = {}).url = G(t = e) ? t : t.url || "", n.timeout = t.timeout ? parseInt(t.timeout, 10) : 0, n.headers = t.headers ? t.headers : {}, r(Y, function (e) {
+        n[e] = j(e, t[e], Y[e], n.timeout, n.headers);
+      }), n.remove = t.remove || null, delete n.headers, n;
+      var t, n;
+    },
+    object: function object(e) {
+      try {
+        return JSON.parse(e.replace(/{\s*'/g, '{"').replace(/'\s*}/g, '"}').replace(/'\s*:/g, '":').replace(/:\s*'/g, ':"').replace(/,\s*'/g, ',"').replace(/'\s*,/g, '",'));
+      } catch (e) {
+        return null;
+      }
+    }
+  },
+      z = function z(e, t, n) {
+    if (e === t) return e;
+    var r,
+        o = k(e);
+
+    if (o !== n) {
+      var i = (r = e, X[n](r));
+      if (o = k(i), null === i) throw 'Trying to assign value with incorrect type to "' + option + '", allowed type: "' + n + '"';
+      e = i;
+    }
+
+    return e;
+  },
+      W = function W(e) {
+    var t = {};
+    return r(e, function (n) {
+      var r,
+          o,
+          i,
+          a = e[n];
+      t[n] = (r = a[0], o = a[1], i = r, {
+        enumerable: !0,
+        get: function get() {
+          return i;
+        },
+        set: function set(e) {
+          i = z(e, r, o);
+        }
+      });
+    }), o(t);
+  },
+      Q = function Q(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : "-";
+    return e.split(/(?=[A-Z])/).map(function (e) {
+      return e.toLowerCase();
+    }).join(t);
+  },
+      Z = function Z(e) {
+    return function (t, n, o) {
+      var i = {};
+      return r(e, function (e) {
+        var n = Q(e, "_").toUpperCase();
+
+        i["SET_" + n] = function (r) {
+          try {
+            o.options[e] = r.value;
+          } catch (e) {}
+
+          t("DID_SET_" + n, {
+            value: o.options[e]
+          });
+        };
+      }), i;
+    };
+  },
+      $ = function $(e) {
+    return function (t) {
+      var n = {};
+      return r(e, function (e) {
+        n["GET_" + Q(e, "_").toUpperCase()] = function (n) {
+          return t.options[e];
+        };
+      }), n;
+    };
+  },
+      K = 1,
+      J = 2,
+      ee = 3,
+      te = 4,
+      ne = 5,
+      re = function re() {
+    return Math.random().toString(36).substr(2, 9);
+  },
+      oe = function oe(e, t) {
+    return e.splice(t, 1);
+  },
+      ie = function ie() {
+    var e = [],
+        t = function t(_t2, n) {
+      oe(e, e.findIndex(function (e) {
+        return e.event === _t2 && (e.cb === n || !n);
+      }));
+    };
+
+    return {
+      fire: function fire(t) {
+        for (var n = arguments.length, r = new Array(n > 1 ? n - 1 : 0), o = 1; o < n; o++) {
+          r[o - 1] = arguments[o];
+        }
+
+        e.filter(function (e) {
+          return e.event === t;
+        }).map(function (e) {
+          return e.cb;
+        }).forEach(function (e) {
+          setTimeout(function () {
+            e.apply(void 0, r);
+          }, 0);
+        });
+      },
+      on: function on(t, n) {
+        e.push({
+          event: t,
+          cb: n
+        });
+      },
+      onOnce: function onOnce(n, r) {
+        e.push({
+          event: n,
+          cb: function cb() {
+            t(n, r), r.apply(void 0, arguments);
+          }
+        });
+      },
+      off: t
+    };
+  },
+      ae = function ae(e, t, n) {
+    Object.getOwnPropertyNames(e).filter(function (e) {
+      return !n.includes(e);
+    }).forEach(function (n) {
+      return Object.defineProperty(t, n, Object.getOwnPropertyDescriptor(e, n));
+    });
+  },
+      se = ["fire", "process", "revert", "load", "on", "off", "onOnce", "retryLoad", "extend", "archive", "archived", "release", "released", "requestProcessing", "freeze"],
+      ue = function ue(e) {
+    var t = {};
+    return ae(e, t, se), t;
+  },
+      le = {
+    INIT: 1,
+    IDLE: 2,
+    PROCESSING_QUEUED: 9,
+    PROCESSING: 3,
+    PROCESSING_COMPLETE: 5,
+    PROCESSING_ERROR: 6,
+    PROCESSING_REVERT_ERROR: 10,
+    LOADING: 7,
+    LOAD_ERROR: 8
+  },
+      ce = {
+    INPUT: 1,
+    LIMBO: 2,
+    LOCAL: 3
+  },
+      fe = function fe(e) {
+    return /[^0-9]+/.exec(e);
+  },
+      de = function de() {
+    return fe(1.1.toLocaleString())[0];
+  },
+      pe = {
+    BOOLEAN: "boolean",
+    INT: "int",
+    NUMBER: "number",
+    STRING: "string",
+    ARRAY: "array",
+    OBJECT: "object",
+    FUNCTION: "function",
+    ACTION: "action",
+    SERVER_API: "serverapi",
+    REGEX: "regex"
+  },
+      Ee = [],
+      _e = function _e(e, t, n) {
+    return new Promise(function (r, o) {
+      var i = Ee.filter(function (t) {
+        return t.key === e;
+      }).map(function (e) {
+        return e.cb;
+      });
+
+      if (0 !== i.length) {
+        var a = i.shift();
+        i.reduce(function (e, t) {
+          return e.then(function (e) {
+            return t(e, n);
+          });
+        }, a(t, n)).then(function (e) {
+          return r(e);
+        })["catch"](function (e) {
+          return o(e);
+        });
+      } else r(t);
+    });
+  },
+      Te = function Te(e, t, n) {
+    return Ee.filter(function (t) {
+      return t.key === e;
+    }).map(function (e) {
+      return e.cb(t, n);
+    });
+  },
+      Ie = function Ie(e, t) {
+    return Ee.push({
+      key: e,
+      cb: t
+    });
+  },
+      ve = function ve() {
+    return Object.assign({}, me);
+  },
+      me = {
+    id: [null, pe.STRING],
+    name: ["filepond", pe.STRING],
+    disabled: [!1, pe.BOOLEAN],
+    className: [null, pe.STRING],
+    required: [!1, pe.BOOLEAN],
+    captureMethod: [null, pe.STRING],
+    allowDrop: [!0, pe.BOOLEAN],
+    allowBrowse: [!0, pe.BOOLEAN],
+    allowPaste: [!0, pe.BOOLEAN],
+    allowMultiple: [!1, pe.BOOLEAN],
+    allowReplace: [!0, pe.BOOLEAN],
+    allowRevert: [!0, pe.BOOLEAN],
+    forceRevert: [!1, pe.BOOLEAN],
+    maxFiles: [null, pe.INT],
+    checkValidity: [!1, pe.BOOLEAN],
+    itemInsertLocationFreedom: [!0, pe.BOOLEAN],
+    itemInsertLocation: ["before", pe.STRING],
+    itemInsertInterval: [75, pe.INT],
+    dropOnPage: [!1, pe.BOOLEAN],
+    dropOnElement: [!0, pe.BOOLEAN],
+    dropValidation: [!1, pe.BOOLEAN],
+    ignoredFiles: [[".ds_store", "thumbs.db", "desktop.ini"], pe.ARRAY],
+    instantUpload: [!0, pe.BOOLEAN],
+    maxParallelUploads: [2, pe.INT],
+    chunkUploads: [!1, pe.BOOLEAN],
+    chunkForce: [!1, pe.BOOLEAN],
+    chunkSize: [5e6, pe.INT],
+    chunkRetryDelays: [[500, 1e3, 3e3], pe.Array],
+    server: [null, pe.SERVER_API],
+    labelDecimalSeparator: [de(), pe.STRING],
+    labelThousandsSeparator: [(t = de(), n = 1e3.toLocaleString(), n !== 1e3.toString() ? fe(n)[0] : "." === t ? "," : "."), pe.STRING],
+    labelIdle: ['Drag & Drop your files or <span class="filepond--label-action">Browse</span>', pe.STRING],
+    labelInvalidField: ["Field contains invalid files", pe.STRING],
+    labelFileWaitingForSize: ["Waiting for size", pe.STRING],
+    labelFileSizeNotAvailable: ["Size not available", pe.STRING],
+    labelFileCountSingular: ["file in list", pe.STRING],
+    labelFileCountPlural: ["files in list", pe.STRING],
+    labelFileLoading: ["Loading", pe.STRING],
+    labelFileAdded: ["Added", pe.STRING],
+    labelFileLoadError: ["Error during load", pe.STRING],
+    labelFileRemoved: ["Removed", pe.STRING],
+    labelFileRemoveError: ["Error during remove", pe.STRING],
+    labelFileProcessing: ["Uploading", pe.STRING],
+    labelFileProcessingComplete: ["Upload complete", pe.STRING],
+    labelFileProcessingAborted: ["Upload cancelled", pe.STRING],
+    labelFileProcessingError: ["Error during upload", pe.STRING],
+    labelFileProcessingRevertError: ["Error during revert", pe.STRING],
+    labelTapToCancel: ["tap to cancel", pe.STRING],
+    labelTapToRetry: ["tap to retry", pe.STRING],
+    labelTapToUndo: ["tap to undo", pe.STRING],
+    labelButtonRemoveItem: ["Remove", pe.STRING],
+    labelButtonAbortItemLoad: ["Abort", pe.STRING],
+    labelButtonRetryItemLoad: ["Retry", pe.STRING],
+    labelButtonAbortItemProcessing: ["Cancel", pe.STRING],
+    labelButtonUndoItemProcessing: ["Undo", pe.STRING],
+    labelButtonRetryItemProcessing: ["Retry", pe.STRING],
+    labelButtonProcessItem: ["Upload", pe.STRING],
+    iconRemove: ['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M11.586 13l-2.293 2.293a1 1 0 0 0 1.414 1.414L13 14.414l2.293 2.293a1 1 0 0 0 1.414-1.414L14.414 13l2.293-2.293a1 1 0 0 0-1.414-1.414L13 11.586l-2.293-2.293a1 1 0 0 0-1.414 1.414L11.586 13z" fill="currentColor" fill-rule="nonzero"/></svg>', pe.STRING],
+    iconProcess: ['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M14 10.414v3.585a1 1 0 0 1-2 0v-3.585l-1.293 1.293a1 1 0 0 1-1.414-1.415l3-3a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1-1.414 1.415L14 10.414zM9 18a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2H9z" fill="currentColor" fill-rule="evenodd"/></svg>', pe.STRING],
+    iconRetry: ['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M10.81 9.185l-.038.02A4.997 4.997 0 0 0 8 13.683a5 5 0 0 0 5 5 5 5 0 0 0 5-5 1 1 0 0 1 2 0A7 7 0 1 1 9.722 7.496l-.842-.21a.999.999 0 1 1 .484-1.94l3.23.806c.535.133.86.675.73 1.21l-.804 3.233a.997.997 0 0 1-1.21.73.997.997 0 0 1-.73-1.21l.23-.928v-.002z" fill="currentColor" fill-rule="nonzero"/></svg>', pe.STRING],
+    iconUndo: ['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M9.185 10.81l.02-.038A4.997 4.997 0 0 1 13.683 8a5 5 0 0 1 5 5 5 5 0 0 1-5 5 1 1 0 0 0 0 2A7 7 0 1 0 7.496 9.722l-.21-.842a.999.999 0 1 0-1.94.484l.806 3.23c.133.535.675.86 1.21.73l3.233-.803a.997.997 0 0 0 .73-1.21.997.997 0 0 0-1.21-.73l-.928.23-.002-.001z" fill="currentColor" fill-rule="nonzero"/></svg>', pe.STRING],
+    iconDone: ['<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M18.293 9.293a1 1 0 0 1 1.414 1.414l-7.002 7a1 1 0 0 1-1.414 0l-3.998-4a1 1 0 1 1 1.414-1.414L12 15.586l6.294-6.293z" fill="currentColor" fill-rule="nonzero"/></svg>', pe.STRING],
+    oninit: [null, pe.FUNCTION],
+    onwarning: [null, pe.FUNCTION],
+    onerror: [null, pe.FUNCTION],
+    onactivatefile: [null, pe.FUNCTION],
+    onaddfilestart: [null, pe.FUNCTION],
+    onaddfileprogress: [null, pe.FUNCTION],
+    onaddfile: [null, pe.FUNCTION],
+    onprocessfilestart: [null, pe.FUNCTION],
+    onprocessfileprogress: [null, pe.FUNCTION],
+    onprocessfileabort: [null, pe.FUNCTION],
+    onprocessfilerevert: [null, pe.FUNCTION],
+    onprocessfile: [null, pe.FUNCTION],
+    onprocessfiles: [null, pe.FUNCTION],
+    onremovefile: [null, pe.FUNCTION],
+    onpreparefile: [null, pe.FUNCTION],
+    onupdatefiles: [null, pe.FUNCTION],
+    beforeDropFile: [null, pe.FUNCTION],
+    beforeAddFile: [null, pe.FUNCTION],
+    beforeRemoveFile: [null, pe.FUNCTION],
+    stylePanelLayout: [null, pe.STRING],
+    stylePanelAspectRatio: [null, pe.STRING],
+    styleItemPanelAspectRatio: [null, pe.STRING],
+    styleButtonRemoveItemPosition: ["left", pe.STRING],
+    styleButtonProcessItemPosition: ["right", pe.STRING],
+    styleLoadIndicatorPosition: ["right", pe.STRING],
+    styleProgressIndicatorPosition: ["right", pe.STRING],
+    files: [[], pe.ARRAY]
+  },
+      he = function he(e, t) {
+    return P(t) ? e[0] || null : q(t) ? e[t] || null : ("object" == _typeof(t) && (t = t.id), e.find(function (e) {
+      return e.id === t;
+    }) || null);
+  },
+      ge = function ge(e) {
+    if (P(e)) return e;
+
+    if (/:/.test(e)) {
+      var t = e.split(":");
+      return t[1] / t[0];
+    }
+
+    return parseFloat(e);
+  },
+      Re = function Re(e) {
+    return e.filter(function (e) {
+      return !e.archived;
+    });
+  },
+      Oe = {
+    EMPTY: 0,
+    IDLE: 1,
+    ERROR: 2,
+    BUSY: 3,
+    READY: 4
+  },
+      ye = [le.LOAD_ERROR, le.PROCESSING_ERROR, le.PROCESSING_REVERT_ERROR],
+      De = [le.LOADING, le.PROCESSING, le.PROCESSING_QUEUED, le.INIT],
+      Se = [le.PROCESSING_COMPLETE],
+      Ae = function Ae(e) {
+    return ye.includes(e.status);
+  },
+      be = function be(e) {
+    return De.includes(e.status);
+  },
+      Le = function Le(e) {
+    return Se.includes(e.status);
+  },
+      Pe = function Pe(e) {
+    return {
+      GET_STATUS: function GET_STATUS() {
+        var t = Re(e.items),
+            n = Oe.EMPTY,
+            r = Oe.ERROR,
+            o = Oe.BUSY,
+            i = Oe.IDLE,
+            a = Oe.READY;
+        return 0 === t.length ? n : t.some(Ae) ? r : t.some(be) ? o : t.some(Le) ? a : i;
+      },
+      GET_ITEM: function GET_ITEM(t) {
+        return he(e.items, t);
+      },
+      GET_ACTIVE_ITEM: function GET_ACTIVE_ITEM(t) {
+        return he(Re(e.items), t);
+      },
+      GET_ACTIVE_ITEMS: function GET_ACTIVE_ITEMS() {
+        return Re(e.items);
+      },
+      GET_ITEMS: function GET_ITEMS() {
+        return e.items;
+      },
+      GET_ITEM_NAME: function GET_ITEM_NAME(t) {
+        var n = he(e.items, t);
+        return n ? n.filename : null;
+      },
+      GET_ITEM_SIZE: function GET_ITEM_SIZE(t) {
+        var n = he(e.items, t);
+        return n ? n.fileSize : null;
+      },
+      GET_STYLES: function GET_STYLES() {
+        return Object.keys(e.options).filter(function (e) {
+          return /^style/.test(e);
+        }).map(function (t) {
+          return {
+            name: t,
+            value: e.options[t]
+          };
+        });
+      },
+      GET_PANEL_ASPECT_RATIO: function GET_PANEL_ASPECT_RATIO() {
+        return /circle/.test(e.options.stylePanelLayout) ? 1 : ge(e.options.stylePanelAspectRatio);
+      },
+      GET_ITEM_PANEL_ASPECT_RATIO: function GET_ITEM_PANEL_ASPECT_RATIO() {
+        return e.options.styleItemPanelAspectRatio;
+      },
+      GET_ITEMS_BY_STATUS: function GET_ITEMS_BY_STATUS(t) {
+        return Re(e.items).filter(function (e) {
+          return e.status === t;
+        });
+      },
+      GET_TOTAL_ITEMS: function GET_TOTAL_ITEMS() {
+        return Re(e.items).length;
+      },
+      IS_ASYNC: function IS_ASYNC() {
+        return H(e.options.server) && (H(e.options.server.process) || x(e.options.server.process));
+      }
+    };
+  },
+      Me = function Me(e, t, n) {
+    return P(t) ? null : void 0 === n ? (e.push(t), t) : (r = n, o = 0, i = e.length, function (e, t, n) {
+      e.splice(t, 0, n);
+    }(e, n = Math.max(Math.min(i, r), o), t), t);
+    var r, o, i;
+  },
+      we = function we(e) {
+    return /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\/?%\s]*)\s*$/i.test(e);
+  },
+      Ce = function Ce(e) {
+    return e.split("/").pop().split("?").shift();
+  },
+      Ne = function Ne(e) {
+    return e.split(".").pop();
+  },
+      Ge = function Ge(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : "";
+    return (t + e).slice(-t.length);
+  },
+      Ue = function Ue() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : new Date();
+    return e.getFullYear() + "-" + Ge(e.getMonth() + 1, "00") + "-" + Ge(e.getDate(), "00") + "_" + Ge(e.getHours(), "00") + "-" + Ge(e.getMinutes(), "00") + "-" + Ge(e.getSeconds(), "00");
+  },
+      Be = function Be(e, t) {
+    var n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : null,
+        r = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : null,
+        o = "string" == typeof n ? e.slice(0, e.size, n) : e.slice(0, e.size, e.type);
+    return o.lastModifiedDate = new Date(), G(t) || (t = Ue()), t && null === r && Ne(t) ? o.name = t : (r = r || function (e) {
+      if ("string" != typeof e) return "";
+      var t = e.split("/").pop();
+      return /svg/.test(t) ? "svg" : /zip|compressed/.test(t) ? "zip" : /plain/.test(t) ? "txt" : /msword/.test(t) ? "doc" : /[a-z]+/.test(t) ? "jpeg" === t ? "jpg" : t : "";
+    }(o.type), o.name = t + (r ? "." + r : "")), o;
+  },
+      Fe = function Fe(e, t) {
+    var n = window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
+
+    if (n) {
+      var r = new n();
+      return r.append(e), r.getBlob(t);
+    }
+
+    return new Blob([e], {
+      type: t
+    });
+  },
+      qe = function qe(e) {
+    return (/^data:(.+);/.exec(e) || [])[1] || null;
+  },
+      Ve = function Ve(e) {
+    var t = qe(e);
+    return function (e, t) {
+      for (var n = new ArrayBuffer(e.length), r = new Uint8Array(n), o = 0; o < e.length; o++) {
+        r[o] = e.charCodeAt(o);
+      }
+
+      return Fe(n, t);
+    }(function (e) {
+      return atob(function (e) {
+        return e.split(",")[1].replace(/\s/g, "");
+      }(e));
+    }(e), t);
+  },
+      xe = function xe(e) {
+    if (!/^content-disposition:/i.test(e)) return null;
+    var t = e.split(/filename=|filename\*=.+''/).splice(1).map(function (e) {
+      return e.trim().replace(/^["']|[;"']{0,2}$/g, "");
+    }).filter(function (e) {
+      return e.length;
+    });
+    return t.length ? decodeURI(t[t.length - 1]) : null;
+  },
+      Ye = function Ye(e) {
+    if (/content-length:/i.test(e)) {
+      var t = e.match(/[0-9]+/)[0];
+      return t ? parseInt(t, 10) : null;
+    }
+
+    return null;
+  },
+      je = function je(e) {
+    return /x-content-transfer-id:/i.test(e) && (e.split(":")[1] || "").trim() || null;
+  },
+      He = function He(e) {
+    var t = {
+      source: null,
+      name: null,
+      size: null
+    },
+        n = e.split("\n"),
+        r = !0,
+        o = !1,
+        i = void 0;
+
+    try {
+      for (var a, s = n[Symbol.iterator](); !(r = (a = s.next()).done); r = !0) {
+        var u = a.value,
+            l = xe(u);
+        if (l) t.name = l;else {
+          var c = Ye(u);
+          if (c) t.size = c;else {
+            var f = je(u);
+            f && (t.source = f);
+          }
+        }
+      }
+    } catch (e) {
+      o = !0, i = e;
+    } finally {
+      try {
+        r || null == s["return"] || s["return"]();
+      } finally {
+        if (o) throw i;
+      }
+    }
+
+    return t;
+  },
+      ke = function ke(e) {
+    var t = {
+      source: null,
+      complete: !1,
+      progress: 0,
+      size: null,
+      timestamp: null,
+      duration: 0,
+      request: null
+    },
+        n = function n(_n2) {
+      e ? (t.timestamp = Date.now(), t.request = e(_n2, function (e) {
+        t.duration = Date.now() - t.timestamp, t.complete = !0, e instanceof Blob && (e = Be(e, e.name || Ce(_n2))), r.fire("load", e instanceof Blob ? e : e.body);
+      }, function (e) {
+        r.fire("error", "string" == typeof e ? {
+          type: "error",
+          code: 0,
+          body: e
+        } : e);
+      }, function (e, n, o) {
+        o && (t.size = o), t.duration = Date.now() - t.timestamp, e ? (t.progress = n / o, r.fire("progress", t.progress)) : t.progress = null;
+      }, function () {
+        r.fire("abort");
+      }, function (e) {
+        var n = He("string" == typeof e ? e : e.headers);
+        r.fire("meta", {
+          size: t.size || n.size,
+          filename: n.name,
+          source: n.source
+        });
+      })) : r.fire("error", {
+        type: "error",
+        body: "Can't load URL",
+        code: 400
+      });
+    },
+        r = Object.assign({}, ie(), {
+      setSource: function setSource(e) {
+        return t.source = e;
+      },
+      getProgress: function getProgress() {
+        return t.progress;
+      },
+      abort: function abort() {
+        t.request && t.request.abort && t.request.abort();
+      },
+      load: function load() {
+        var e,
+            o,
+            i = t.source;
+        r.fire("init", i), i instanceof File ? r.fire("load", i) : i instanceof Blob ? r.fire("load", Be(i, i.name)) : we(i) ? r.fire("load", Be(Ve(i), e, null, o)) : n(i);
+      }
+    });
+
+    return r;
+  },
+      Xe = function Xe(e) {
+    return /GET|HEAD/.test(e);
+  },
+      ze = function ze(e, t, n) {
+    var r = {
+      onheaders: function onheaders() {},
+      onprogress: function onprogress() {},
+      onload: function onload() {},
+      ontimeout: function ontimeout() {},
+      onerror: function onerror() {},
+      onabort: function onabort() {},
+      abort: function abort() {
+        o = !0, a.abort();
+      }
+    },
+        o = !1,
+        i = !1;
+    n = Object.assign({
+      method: "POST",
+      headers: {},
+      withCredentials: !1
+    }, n), t = encodeURI(t), Xe(n.method) && e && (t = "" + t + encodeURIComponent("string" == typeof e ? e : JSON.stringify(e)));
+    var a = new XMLHttpRequest();
+    return (Xe(n.method) ? a : a.upload).onprogress = function (e) {
+      o || r.onprogress(e.lengthComputable, e.loaded, e.total);
+    }, a.onreadystatechange = function () {
+      a.readyState < 2 || 4 === a.readyState && 0 === a.status || i || (i = !0, r.onheaders(a));
+    }, a.onload = function () {
+      a.status >= 200 && a.status < 300 ? r.onload(a) : r.onerror(a);
+    }, a.onerror = function () {
+      return r.onerror(a);
+    }, a.onabort = function () {
+      o = !0, r.onabort();
+    }, a.ontimeout = function () {
+      return r.ontimeout(a);
+    }, a.open(n.method, t, !0), q(n.timeout) && (a.timeout = n.timeout), Object.keys(n.headers).forEach(function (e) {
+      var t = unescape(encodeURIComponent(n.headers[e]));
+      a.setRequestHeader(e, t);
+    }), n.responseType && (a.responseType = n.responseType), n.withCredentials && (a.withCredentials = !0), a.send(e), r;
+  },
+      We = function We(e, t, n, r) {
+    return {
+      type: e,
+      code: t,
+      body: n,
+      headers: r
+    };
+  },
+      Qe = function Qe(e) {
+    return function (t) {
+      e(We("error", 0, "Timeout", t.getAllResponseHeaders()));
+    };
+  },
+      Ze = function Ze() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "",
+        t = arguments.length > 1 ? arguments[1] : void 0;
+    if ("function" == typeof t) return t;
+    if (!t || !G(t.url)) return null;
+
+    var n = t.onload || function (e) {
+      return e;
+    },
+        r = t.onerror || function (e) {
+      return null;
+    };
+
+    return function (o, i, a, s, u, l) {
+      var c = ze(o, e + t.url, Object.assign({}, t, {
+        responseType: "blob"
+      }));
+      return c.onload = function (e) {
+        var t = e.getAllResponseHeaders(),
+            r = He(t).name || Ce(o);
+        i(We("load", e.status, Be(n(e.response), r), t));
+      }, c.onerror = function (e) {
+        a(We("error", e.status, r(e.response) || e.statusText, e.getAllResponseHeaders()));
+      }, c.onheaders = function (e) {
+        l(We("headers", e.status, null, e.getAllResponseHeaders()));
+      }, c.ontimeout = Qe(a), c.onprogress = s, c.onabort = u, c;
+    };
+  };
+
+  function $e(e) {
+    this.wrapped = e;
+  }
+
+  function Ke(e) {
+    var t, n;
+
+    function r(t, n) {
+      try {
+        var i = e[t](n),
+            a = i.value,
+            s = a instanceof $e;
+        Promise.resolve(s ? a.wrapped : a).then(function (e) {
+          s ? r("next", e) : o(i.done ? "return" : "normal", e);
+        }, function (e) {
+          r("throw", e);
+        });
+      } catch (e) {
+        o("throw", e);
+      }
+    }
+
+    function o(e, o) {
+      switch (e) {
+        case "return":
+          t.resolve({
+            value: o,
+            done: !0
+          });
+          break;
+
+        case "throw":
+          t.reject(o);
+          break;
+
+        default:
+          t.resolve({
+            value: o,
+            done: !1
+          });
+      }
+
+      (t = t.next) ? r(t.key, t.arg) : n = null;
+    }
+
+    this._invoke = function (e, o) {
+      return new Promise(function (i, a) {
+        var s = {
+          key: e,
+          arg: o,
+          resolve: i,
+          reject: a,
+          next: null
+        };
+        n ? n = n.next = s : (t = n = s, r(e, o));
+      });
+    }, "function" != typeof e["return"] && (this["return"] = void 0);
+  }
+
+  "function" == typeof Symbol && Symbol.asyncIterator && (Ke.prototype[Symbol.asyncIterator] = function () {
+    return this;
+  }), Ke.prototype.next = function (e) {
+    return this._invoke("next", e);
+  }, Ke.prototype["throw"] = function (e) {
+    return this._invoke("throw", e);
+  }, Ke.prototype["return"] = function (e) {
+    return this._invoke("return", e);
+  };
+
+  function Je(e) {
+    return function (e) {
+      if (Array.isArray(e)) {
+        for (var t = 0, n = new Array(e.length); t < e.length; t++) {
+          n[t] = e[t];
+        }
+
+        return n;
+      }
+    }(e) || et(e) || function () {
+      throw new TypeError("Invalid attempt to spread non-iterable instance");
+    }();
+  }
+
+  function et(e) {
+    if (Symbol.iterator in Object(e) || "[object Arguments]" === Object.prototype.toString.call(e)) return Array.from(e);
+  }
+
+  var tt = 0,
+      nt = 1,
+      rt = 2,
+      ot = 3,
+      it = 4,
+      at = function at(e, t, n, r, o, i, a, s, u, l, c) {
+    for (var f = [], d = c.chunkTransferId, p = c.chunkServer, E = c.chunkSize, _ = c.chunkRetryDelays, T = {
+      serverId: d,
+      aborted: !1
+    }, I = t.ondata || function (e) {
+      return e;
+    }, v = t.onload || function (e, t) {
+      return "HEAD" === t ? e.getResponseHeader("Upload-Offset") : e.response;
+    }, m = t.onerror || function (e) {
+      return null;
+    }, h = Math.floor(r.size / E), g = 0; g <= h; g++) {
+      var R = g * E,
+          O = r.slice(R, R + E, "application/offset+octet-stream");
+      f[g] = {
+        index: g,
+        size: O.size,
+        offset: R,
+        data: O,
+        file: r,
+        progress: 0,
+        retries: Je(_),
+        status: tt,
+        error: null,
+        request: null,
+        timeout: null
+      };
+    }
+
+    var y,
+        D,
+        S,
+        A,
+        b = function b(e) {
+      return e.status === tt || e.status === ot;
+    },
+        L = function L(t) {
+      if (!T.aborted) if (t = t || f.find(b)) {
+        t.status = rt, t.progress = null;
+
+        var n = p.ondata || function (e) {
+          return e;
+        },
+            o = p.onerror || function (e) {
+          return null;
+        },
+            s = e + p.url + T.serverId,
+            l = "function" == typeof p.headers ? p.headers(t) : Object.assign({}, p.headers, {
+          "Content-Type": "application/offset+octet-stream",
+          "Upload-Offset": t.offset,
+          "Upload-Length": r.size,
+          "Upload-Name": r.name
+        }),
+            c = t.request = ze(n(t.data), s, Object.assign({}, p, {
+          headers: l
+        }));
+
+        c.onload = function () {
+          t.status = nt, t.request = null, w();
+        }, c.onprogress = function (e, n, r) {
+          t.progress = e ? n : null, M();
+        }, c.onerror = function (e) {
+          t.status = ot, t.request = null, t.error = o(e.response) || e.statusText, P(t) || a(We("error", e.status, o(e.response) || e.statusText, e.getAllResponseHeaders()));
+        }, c.ontimeout = function (e) {
+          t.status = ot, t.request = null, P(t) || Qe(a)(e);
+        }, c.onabort = function () {
+          t.status = tt, t.request = null, u();
+        };
+      } else f.every(function (e) {
+        return e.status === nt;
+      }) && i(T.serverId);
+    },
+        P = function P(e) {
+      return 0 !== e.retries.length && (e.status = it, clearTimeout(e.timeout), e.timeout = setTimeout(function () {
+        L(e);
+      }, e.retries.shift()), !0);
+    },
+        M = function M() {
+      var e = f.reduce(function (e, t) {
+        return null === e || null === t.progress ? null : e + t.progress;
+      }, 0);
+      if (null === e) return s(!1, 0, 0);
+      var t = f.reduce(function (e, t) {
+        return e + t.size;
+      }, 0);
+      s(!0, e, t);
+    },
+        w = function w() {
+      f.filter(function (e) {
+        return e.status === rt;
+      }).length >= 1 || L();
+    };
+
+    return T.serverId ? (y = function y(e) {
+      T.aborted || (f.filter(function (t) {
+        return t.offset < e;
+      }).forEach(function (e) {
+        e.status = nt, e.progress = e.size;
+      }), w());
+    }, D = e + p.url + T.serverId, S = {
+      headers: "function" == typeof t.headers ? t.headers(T.serverId) : Object.assign({}, t.headers),
+      method: "HEAD"
+    }, (A = ze(null, D, S)).onload = function (e) {
+      return y(v(e, S.method));
+    }, A.onerror = function (e) {
+      return a(We("error", e.status, m(e.response) || e.statusText, e.getAllResponseHeaders()));
+    }, A.ontimeout = Qe(a)) : function (i) {
+      var s = new FormData();
+      H(o) && s.append(n, JSON.stringify(o));
+      var u = "function" == typeof t.headers ? t.headers(r, o) : Object.assign({}, t.headers, {
+        "Upload-Length": r.size
+      }),
+          l = Object.assign({}, t, {
+        headers: u
+      }),
+          c = ze(I(s), e + t.url, l);
+      c.onload = function (e) {
+        return i(v(e, l.method));
+      }, c.onerror = function (e) {
+        return a(We("error", e.status, m(e.response) || e.statusText, e.getAllResponseHeaders()));
+      }, c.ontimeout = Qe(a);
+    }(function (e) {
+      T.aborted || (l(e), T.serverId = e, w());
+    }), {
+      abort: function abort() {
+        T.aborted = !0, f.forEach(function (e) {
+          clearTimeout(e.timeout), e.request && e.request.abort();
+        });
+      }
+    };
+  },
+      st = function st() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "",
+        t = arguments.length > 1 ? arguments[1] : void 0,
+        n = arguments.length > 2 ? arguments[2] : void 0,
+        r = arguments.length > 3 ? arguments[3] : void 0;
+    return "function" == typeof t ? function () {
+      for (var e = arguments.length, o = new Array(e), i = 0; i < e; i++) {
+        o[i] = arguments[i];
+      }
+
+      return t.apply(void 0, [n].concat(o, [r]));
+    } : t && G(t.url) ? function (e, t, n, r) {
+      return function (o, i, a, s, u, l, c) {
+        if (o) {
+          var f = r.chunkUploads,
+              d = f && o.size > r.chunkSize,
+              p = f && (d || r.chunkForce);
+          if (o instanceof Blob && p) return at(e, t, n, o, i, a, s, u, l, c, r);
+
+          var E = t.ondata || function (e) {
+            return e;
+          },
+              _ = t.onload || function (e) {
+            return e;
+          },
+              T = t.onerror || function (e) {
+            return null;
+          },
+              I = new FormData();
+
+          H(i) && I.append(n, JSON.stringify(i)), (o instanceof Blob ? [{
+            name: null,
+            file: o
+          }] : o).forEach(function (e) {
+            I.append(n, e.file, null === e.name ? e.file.name : "" + e.name + e.file.name);
+          });
+          var v = ze(E(I), e + t.url, t);
+          return v.onload = function (e) {
+            a(We("load", e.status, _(e.response), e.getAllResponseHeaders()));
+          }, v.onerror = function (e) {
+            s(We("error", e.status, T(e.response) || e.statusText, e.getAllResponseHeaders()));
+          }, v.ontimeout = Qe(s), v.onprogress = u, v.onabort = l, v;
+        }
+      };
+    }(e, t, n, r) : null;
+  },
+      ut = function ut() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "",
+        t = arguments.length > 1 ? arguments[1] : void 0;
+    if ("function" == typeof t) return t;
+    if (!t || !G(t.url)) return function (e, t) {
+      return t();
+    };
+
+    var n = t.onload || function (e) {
+      return e;
+    },
+        r = t.onerror || function (e) {
+      return null;
+    };
+
+    return function (o, i, a) {
+      var s = ze(o, e + t.url, t);
+      return s.onload = function (e) {
+        i(We("load", e.status, n(e.response), e.getAllResponseHeaders()));
+      }, s.onerror = function (e) {
+        a(We("error", e.status, r(e.response) || e.statusText, e.getAllResponseHeaders()));
+      }, s.ontimeout = Qe(a), s;
+    };
+  },
+      lt = function lt() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : 0,
+        t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 1;
+    return e + Math.random() * (t - e);
+  },
+      ct = function ct(e) {
+    var t = {
+      complete: !1,
+      perceivedProgress: 0,
+      perceivedPerformanceUpdater: null,
+      progress: null,
+      timestamp: null,
+      perceivedDuration: 0,
+      duration: 0,
+      request: null,
+      response: null
+    },
+        n = function n() {
+      t.request && (t.perceivedPerformanceUpdater.clear(), t.request.abort(), t.complete = !0);
+    },
+        r = Object.assign({}, ie(), {
+      process: function process(n, o) {
+        var i = function i() {
+          0 !== t.duration && null !== t.progress && r.fire("progress", r.getProgress());
+        },
+            a = function a() {
+          t.complete = !0, r.fire("load-perceived", t.response.body);
+        };
+
+        r.fire("start"), t.timestamp = Date.now(), t.perceivedPerformanceUpdater = function (e) {
+          var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 1e3,
+              n = (arguments.length > 2 && void 0 !== arguments[2] && arguments[2], arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : 25),
+              r = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : 250,
+              o = null,
+              i = Date.now();
+          return function a() {
+            var s = Date.now() - i,
+                u = lt(n, r);
+            s + u > t && (u = s + u - t);
+            var l = s / t;
+            l >= 1 ? e(1) : (e(l), o = setTimeout(a, u));
+          }(), {
+            clear: function clear() {
+              clearTimeout(o);
+            }
+          };
+        }(function (e) {
+          t.perceivedProgress = e, t.perceivedDuration = Date.now() - t.timestamp, i(), t.response && 1 === t.perceivedProgress && !t.complete && a();
+        }, lt(750, 1500)), t.request = e(n, o, function (e) {
+          t.response = H(e) ? e : {
+            type: "load",
+            code: 200,
+            body: "" + e,
+            headers: {}
+          }, t.duration = Date.now() - t.timestamp, t.progress = 1, r.fire("load", t.response.body), 1 === t.perceivedProgress && a();
+        }, function (e) {
+          t.perceivedPerformanceUpdater.clear(), r.fire("error", H(e) ? e : {
+            type: "error",
+            code: 0,
+            body: "" + e
+          });
+        }, function (e, n, r) {
+          t.duration = Date.now() - t.timestamp, t.progress = e ? n / r : null, i();
+        }, function () {
+          t.perceivedPerformanceUpdater.clear(), r.fire("abort", t.response ? t.response.body : null);
+        }, function (e) {
+          r.fire("transfer", e);
+        });
+      },
+      abort: n,
+      getProgress: function getProgress() {
+        return t.progress ? Math.min(t.progress, t.perceivedProgress) : null;
+      },
+      getDuration: function getDuration() {
+        return Math.min(t.duration, t.perceivedDuration);
+      },
+      reset: function reset() {
+        n(), t.complete = !1, t.perceivedProgress = 0, t.progress = 0, t.timestamp = null, t.perceivedDuration = 0, t.duration = 0, t.request = null, t.response = null;
+      }
+    });
+
+    return r;
+  },
+      ft = function ft(e) {
+    return e.substr(0, e.lastIndexOf(".")) || e;
+  },
+      dt = function dt(e) {
+    return !!(e instanceof File || e instanceof Blob && e.name);
+  },
+      pt = function pt() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : null,
+        t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : null,
+        n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : null,
+        r = re(),
+        i = {
+      archived: !1,
+      frozen: !1,
+      released: !1,
+      source: null,
+      file: n,
+      serverFileReference: t,
+      transferId: null,
+      processingAborted: !1,
+      status: t ? le.PROCESSING_COMPLETE : le.INIT,
+      activeLoader: null,
+      activeProcessor: null
+    },
+        a = null,
+        s = {},
+        u = function u(e) {
+      return i.status = e;
+    },
+        l = function l(e) {
+      if (!i.released && !i.frozen) {
+        for (var t = arguments.length, n = new Array(t > 1 ? t - 1 : 0), r = 1; r < t; r++) {
+          n[r - 1] = arguments[r];
+        }
+
+        f.fire.apply(f, [e].concat(n));
+      }
+    },
+        c = function c(e, t, n) {
+      var r = e.split("."),
+          o = r[0],
+          i = r.pop(),
+          a = s;
+      r.forEach(function (e) {
+        return a = a[e];
+      }), JSON.stringify(a[i]) !== JSON.stringify(t) && (a[i] = t, n || l("metadata-update", {
+        key: o,
+        value: s[o]
+      }));
+    },
+        f = Object.assign({
+      id: {
+        get: function get() {
+          return r;
+        }
+      },
+      origin: {
+        get: function get() {
+          return e;
+        }
+      },
+      serverId: {
+        get: function get() {
+          return i.serverFileReference;
+        }
+      },
+      transferId: {
+        get: function get() {
+          return i.transferId;
+        }
+      },
+      status: {
+        get: function get() {
+          return i.status;
+        }
+      },
+      filename: {
+        get: function get() {
+          return i.file.name;
+        }
+      },
+      filenameWithoutExtension: {
+        get: function get() {
+          return ft(i.file.name);
+        }
+      },
+      fileExtension: {
+        get: function get() {
+          return Ne(i.file.name);
+        }
+      },
+      fileType: {
+        get: function get() {
+          return i.file.type;
+        }
+      },
+      fileSize: {
+        get: function get() {
+          return i.file.size;
+        }
+      },
+      file: {
+        get: function get() {
+          return i.file;
+        }
+      },
+      source: {
+        get: function get() {
+          return i.source;
+        }
+      },
+      getMetadata: function getMetadata(e) {
+        return function e(t) {
+          if (!H(t)) return t;
+          var n = L(t) ? [] : {};
+
+          for (var r in t) {
+            if (t.hasOwnProperty(r)) {
+              var o = t[r];
+              n[r] = o && H(o) ? e(o) : o;
+            }
+          }
+
+          return n;
+        }(e ? s[e] : s);
+      },
+      setMetadata: function setMetadata(e, t, n) {
+        if (H(e)) {
+          var r = e;
+          return Object.keys(r).forEach(function (e) {
+            c(e, r[e], t);
+          }), e;
+        }
+
+        return c(e, t, n), t;
+      },
+      extend: function extend(e, t) {
+        return d[e] = t;
+      },
+      abortLoad: function abortLoad() {
+        i.activeLoader ? i.activeLoader.abort() : (u(le.INIT), l("load-abort"));
+      },
+      retryLoad: function retryLoad() {
+        i.activeLoader && i.activeLoader.load();
+      },
+      requestProcessing: function requestProcessing() {
+        i.processingAborted = !1, u(le.PROCESSING_QUEUED);
+      },
+      abortProcessing: function abortProcessing() {
+        return new Promise(function (e) {
+          if (!i.activeProcessor) return i.processingAborted = !0, u(le.IDLE), l("process-abort"), void e();
+          a = function a() {
+            e();
+          }, i.activeProcessor.abort();
+        });
+      },
+      load: function load(t, n, r) {
+        i.source = t, i.file ? l("load-skip") : (i.file = function (e) {
+          var t = [e.name, e.size, e.type];
+          return e instanceof Blob || we(e) ? t[0] = e.name || Ue() : we(e) ? (t[1] = e.length, t[2] = qe(e)) : G(e) && (t[0] = Ce(e), t[1] = 0, t[2] = "application/octet-stream"), {
+            name: t[0],
+            size: t[1],
+            type: t[2]
+          };
+        }(t), n.on("init", function () {
+          l("load-init");
+        }), n.on("meta", function (t) {
+          i.file.size = t.size, i.file.filename = t.filename, t.source && (e = ce.LIMBO, i.serverFileReference = t.source, i.status = le.PROCESSING_COMPLETE), l("load-meta");
+        }), n.on("progress", function (e) {
+          u(le.LOADING), l("load-progress", e);
+        }), n.on("error", function (e) {
+          u(le.LOAD_ERROR), l("load-request-error", e);
+        }), n.on("abort", function () {
+          u(le.INIT), l("load-abort");
+        }), n.on("load", function (t) {
+          i.activeLoader = null;
+
+          var n = function n(t) {
+            i.file = dt(t) ? t : i.file, e === ce.LIMBO && i.serverFileReference ? u(le.PROCESSING_COMPLETE) : u(le.IDLE), l("load");
+          };
+
+          i.serverFileReference ? n(t) : r(t, n, function (e) {
+            i.file = t, l("load-meta"), u(le.LOAD_ERROR), l("load-file-error", e);
+          });
+        }), n.setSource(t), i.activeLoader = n, n.load());
+      },
+      process: function e(t, n) {
+        if (i.processingAborted) i.processingAborted = !1;else if (u(le.PROCESSING), a = null, i.file instanceof Blob) {
+          t.on("load", function (e) {
+            i.transferId = null, i.serverFileReference = e;
+          }), t.on("transfer", function (e) {
+            i.transferId = e;
+          }), t.on("load-perceived", function (e) {
+            i.activeProcessor = null, i.transferId = null, i.serverFileReference = e, u(le.PROCESSING_COMPLETE), l("process-complete", e);
+          }), t.on("start", function () {
+            l("process-start");
+          }), t.on("error", function (e) {
+            i.activeProcessor = null, u(le.PROCESSING_ERROR), l("process-error", e);
+          }), t.on("abort", function (e) {
+            i.activeProcessor = null, i.transferId = null, i.serverFileReference = e, u(le.IDLE), l("process-abort"), a && a();
+          }), t.on("progress", function (e) {
+            l("process-progress", e);
+          });
+          var r = console.error;
+          n(i.file, function (e) {
+            i.archived || t.process(e, Object.assign({}, s));
+          }, r), i.activeProcessor = t;
+        } else f.on("load", function () {
+          e(t, n);
+        });
+      },
+      revert: function revert(e, t) {
+        return new Promise(function (n, r) {
+          null !== i.serverFileReference ? (e(i.serverFileReference, function () {
+            i.serverFileReference = null, n();
+          }, function (e) {
+            t ? (u(le.PROCESSING_REVERT_ERROR), l("process-revert-error"), r(e)) : n();
+          }), u(le.IDLE), l("process-revert")) : n();
+        });
+      }
+    }, ie(), {
+      freeze: function freeze() {
+        return i.frozen = !0;
+      },
+      release: function release() {
+        return i.released = !0;
+      },
+      released: {
+        get: function get() {
+          return i.released;
+        }
+      },
+      archive: function archive() {
+        return i.archived = !0;
+      },
+      archived: {
+        get: function get() {
+          return i.archived;
+        }
+      }
+    }),
+        d = o(f);
+
+    return d;
+  },
+      Et = function Et(e, t) {
+    var n = function (e, t) {
+      return P(t) ? 0 : G(t) ? e.findIndex(function (e) {
+        return e.id === t;
+      }) : -1;
+    }(e, t);
+
+    if (!(n < 0)) return e[n] || null;
+  },
+      _t = function _t(e, t, n, r, o, i) {
+    var a = ze(null, e, {
+      method: "GET",
+      responseType: "blob"
+    });
+    return a.onload = function (n) {
+      var r = n.getAllResponseHeaders(),
+          o = He(r).name || Ce(e);
+      t(We("load", n.status, Be(n.response, o), r));
+    }, a.onerror = function (e) {
+      n(We("error", e.status, e.statusText, e.getAllResponseHeaders()));
+    }, a.onheaders = function (e) {
+      i(We("headers", e.status, null, e.getAllResponseHeaders()));
+    }, a.ontimeout = Qe(n), a.onprogress = r, a.onabort = o, a;
+  },
+      Tt = function Tt(e) {
+    return 0 === e.indexOf("//") && (e = location.protocol + e), e.toLowerCase().replace("blob:", "").replace(/([a-z])?:\/\//, "$1").split("/")[0];
+  },
+      It = function It(e) {
+    return function () {
+      return x(e) ? e.apply(void 0, arguments) : e;
+    };
+  },
+      vt = function vt(e, t) {
+    clearTimeout(t.listUpdateTimeout), t.listUpdateTimeout = setTimeout(function () {
+      e("DID_UPDATE_ITEMS", {
+        items: Re(t.items)
+      });
+    }, 0);
+  },
+      mt = function mt(e) {
+    for (var t = arguments.length, n = new Array(t > 1 ? t - 1 : 0), r = 1; r < t; r++) {
+      n[r - 1] = arguments[r];
+    }
+
+    return new Promise(function (t) {
+      if (!e) return t(!0);
+      var r = e.apply(void 0, n);
+      return null == r ? t(!0) : "boolean" == typeof r ? t(r) : void ("function" == typeof r.then && r.then(t));
+    });
+  },
+      ht = function ht(e, t) {
+    e.items.sort(function (e, n) {
+      return t(ue(e), ue(n));
+    });
+  },
+      gt = function gt(e, t) {
+    return function () {
+      var n = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+          r = n.query,
+          o = n.success,
+          i = void 0 === o ? function () {} : o,
+          a = n.failure,
+          s = void 0 === a ? function () {} : a,
+          u = he(e.items, r);
+      u ? t(u, i, s) : s({
+        error: We("error", 0, "Item not found"),
+        file: null
+      });
+    };
+  },
+      Rt = function Rt(e, t, n) {
+    return {
+      ABORT_ALL: function ABORT_ALL() {
+        Re(n.items).forEach(function (e) {
+          e.freeze(), e.abortLoad(), e.abortProcessing();
+        });
+      },
+      DID_SET_FILES: function DID_SET_FILES(t) {
+        var r = t.value,
+            o = (void 0 === r ? [] : r).map(function (e) {
+          return {
+            source: e.source ? e.source : e,
+            options: e.options
+          };
+        }),
+            i = Re(n.items);
+        i.forEach(function (t) {
+          o.find(function (e) {
+            return e.source === t.source || e.source === t.file;
+          }) || e("REMOVE_ITEM", {
+            query: t
+          });
+        }), i = Re(n.items), o.forEach(function (t, n) {
+          i.find(function (e) {
+            return e.source === t.source || e.file === t.source;
+          }) || e("ADD_ITEM", Object.assign({}, t, {
+            interactionMethod: ne,
+            index: n
+          }));
+        });
+      },
+      DID_UPDATE_ITEM_METADATA: function DID_UPDATE_ITEM_METADATA(r) {
+        var o = r.id;
+        clearTimeout(n.itemUpdateTimeout), n.itemUpdateTimeout = setTimeout(function () {
+          var r = Et(n.items, o);
+
+          if (t("IS_ASYNC")) {
+            var i,
+                a = function a() {
+              setTimeout(function () {
+                e("REQUEST_ITEM_PROCESSING", {
+                  query: o
+                });
+              }, 32);
+            };
+
+            return r.status === le.PROCESSING_COMPLETE ? (i = n.options.instantUpload, void r.revert(ut(n.options.server.url, n.options.server.revert), t("GET_FORCE_REVERT")).then(i ? a : function () {})["catch"](function () {})) : r.status === le.PROCESSING ? function (e) {
+              r.abortProcessing().then(e ? a : function () {});
+            }(n.options.instantUpload) : void (n.options.instantUpload && a());
+          }
+
+          _e("SHOULD_PREPARE_OUTPUT", !1, {
+            item: r,
+            query: t
+          }).then(function (t) {
+            t && e("REQUEST_PREPARE_OUTPUT", {
+              query: o,
+              item: r,
+              ready: function ready(t) {
+                e("DID_PREPARE_OUTPUT", {
+                  id: o,
+                  file: t
+                });
+              }
+            }, !0);
+          });
+        }, 0);
+      },
+      SORT: function SORT(e) {
+        var t = e.compare;
+        ht(n, t);
+      },
+      ADD_ITEMS: function ADD_ITEMS(n) {
+        var r = n.items,
+            o = n.index,
+            i = n.interactionMethod,
+            a = n.success,
+            s = void 0 === a ? function () {} : a,
+            u = n.failure,
+            l = void 0 === u ? function () {} : u,
+            c = o;
+
+        if (-1 === o || void 0 === o) {
+          var f = t("GET_ITEM_INSERT_LOCATION"),
+              d = t("GET_TOTAL_ITEMS");
+          c = "before" === f ? 0 : d;
+        }
+
+        var p = t("GET_IGNORED_FILES"),
+            E = r.filter(function (e) {
+          return dt(e) ? !p.includes(e.name.toLowerCase()) : !P(e);
+        }).map(function (t) {
+          return new Promise(function (n, r) {
+            e("ADD_ITEM", {
+              interactionMethod: i,
+              source: t.source || t,
+              success: n,
+              failure: r,
+              index: c++,
+              options: t.options || {}
+            });
+          });
+        });
+        Promise.all(E).then(s)["catch"](l);
+      },
+      ADD_ITEM: function ADD_ITEM(r) {
+        var o = r.source,
+            i = r.index,
+            a = void 0 === i ? -1 : i,
+            s = r.interactionMethod,
+            u = r.success,
+            l = void 0 === u ? function () {} : u,
+            c = r.failure,
+            f = void 0 === c ? function () {} : c,
+            d = r.options,
+            p = void 0 === d ? {} : d;
+        if (P(o)) f({
+          error: We("error", 0, "No source"),
+          file: null
+        });else if (!dt(o) || !n.options.ignoredFiles.includes(o.name.toLowerCase())) {
+          if (!function (e) {
+            var t = Re(e.items).length;
+            if (!e.options.allowMultiple) return 0 === t;
+            var n = e.options.maxFiles;
+            return null === n || t < n;
+          }(n)) {
+            if (n.options.allowMultiple || !n.options.allowMultiple && !n.options.allowReplace) {
+              var E = We("warning", 0, "Max files");
+              return e("DID_THROW_MAX_FILES", {
+                source: o,
+                error: E
+              }), void f({
+                error: E,
+                file: null
+              });
+            }
+
+            var _ = Re(n.items)[0];
+
+            if (_.status === le.PROCESSING_COMPLETE || _.status === le.PROCESSING_REVERT_ERROR) {
+              var T = t("GET_FORCE_REVERT");
+              if (_.revert(ut(n.options.server.url, n.options.server.revert), T).then(function () {
+                T && e("ADD_ITEM", {
+                  source: o,
+                  index: a,
+                  interactionMethod: s,
+                  success: l,
+                  failure: f,
+                  options: p
+                });
+              })["catch"](function () {}), T) return;
+            }
+
+            e("REMOVE_ITEM", {
+              query: _.id
+            });
+          }
+
+          var I = "local" === p.type ? ce.LOCAL : "limbo" === p.type ? ce.LIMBO : ce.INPUT,
+              v = pt(I, I === ce.INPUT ? null : o, p.file);
+          Object.keys(p.metadata || {}).forEach(function (e) {
+            v.setMetadata(e, p.metadata[e]);
+          }), Te("DID_CREATE_ITEM", v, {
+            query: t,
+            dispatch: e
+          });
+          var m = t("GET_ITEM_INSERT_LOCATION");
+          n.options.itemInsertLocationFreedom || (a = "before" === m ? -1 : n.items.length), Me(n.items, v, a), x(m) && o && ht(n, m);
+          var h = v.id;
+          v.on("load-init", function () {
+            e("DID_START_ITEM_LOAD", {
+              id: h
+            });
+          }), v.on("load-meta", function () {
+            e("DID_UPDATE_ITEM_META", {
+              id: h
+            });
+          }), v.on("load-progress", function (t) {
+            e("DID_UPDATE_ITEM_LOAD_PROGRESS", {
+              id: h,
+              progress: t
+            });
+          }), v.on("load-request-error", function (t) {
+            var r = It(n.options.labelFileLoadError)(t);
+            if (t.code >= 400 && t.code < 500) return e("DID_THROW_ITEM_INVALID", {
+              id: h,
+              error: t,
+              status: {
+                main: r,
+                sub: t.code + " (" + t.body + ")"
+              }
+            }), void f({
+              error: t,
+              file: ue(v)
+            });
+            e("DID_THROW_ITEM_LOAD_ERROR", {
+              id: h,
+              error: t,
+              status: {
+                main: r,
+                sub: n.options.labelTapToRetry
+              }
+            });
+          }), v.on("load-file-error", function (t) {
+            e("DID_THROW_ITEM_INVALID", {
+              id: h,
+              error: t.status,
+              status: t.status
+            }), f({
+              error: t.status,
+              file: ue(v)
+            });
+          }), v.on("load-abort", function () {
+            e("REMOVE_ITEM", {
+              query: h
+            });
+          }), v.on("load-skip", function () {
+            e("COMPLETE_LOAD_ITEM", {
+              query: h,
+              item: v,
+              data: {
+                source: o,
+                success: l
+              }
+            });
+          }), v.on("load", function () {
+            var r = function r(_r2) {
+              _r2 ? (v.on("metadata-update", function (t) {
+                e("DID_UPDATE_ITEM_METADATA", {
+                  id: h,
+                  change: t
+                });
+              }), _e("SHOULD_PREPARE_OUTPUT", !1, {
+                item: v,
+                query: t
+              }).then(function (t) {
+                var r = function r() {
+                  e("COMPLETE_LOAD_ITEM", {
+                    query: h,
+                    item: v,
+                    data: {
+                      source: o,
+                      success: l
+                    }
+                  }), vt(e, n);
+                };
+
+                t ? e("REQUEST_PREPARE_OUTPUT", {
+                  query: h,
+                  item: v,
+                  ready: function ready(t) {
+                    e("DID_PREPARE_OUTPUT", {
+                      id: h,
+                      file: t
+                    }), r();
+                  }
+                }, !0) : r();
+              })) : e("REMOVE_ITEM", {
+                query: h
+              });
+            };
+
+            _e("DID_LOAD_ITEM", v, {
+              query: t,
+              dispatch: e
+            }).then(function () {
+              mt(t("GET_BEFORE_ADD_FILE"), ue(v)).then(r);
+            })["catch"](function () {
+              r(!1);
+            });
+          }), v.on("process-start", function () {
+            e("DID_START_ITEM_PROCESSING", {
+              id: h
+            });
+          }), v.on("process-progress", function (t) {
+            e("DID_UPDATE_ITEM_PROCESS_PROGRESS", {
+              id: h,
+              progress: t
+            });
+          }), v.on("process-error", function (t) {
+            e("DID_THROW_ITEM_PROCESSING_ERROR", {
+              id: h,
+              error: t,
+              status: {
+                main: It(n.options.labelFileProcessingError)(t),
+                sub: n.options.labelTapToRetry
+              }
+            });
+          }), v.on("process-revert-error", function (t) {
+            e("DID_THROW_ITEM_PROCESSING_REVERT_ERROR", {
+              id: h,
+              error: t,
+              status: {
+                main: It(n.options.labelFileProcessingRevertError)(t),
+                sub: n.options.labelTapToRetry
+              }
+            });
+          }), v.on("process-complete", function (t) {
+            e("DID_COMPLETE_ITEM_PROCESSING", {
+              id: h,
+              error: null,
+              serverFileReference: t
+            });
+          }), v.on("process-abort", function () {
+            e("DID_ABORT_ITEM_PROCESSING", {
+              id: h
+            });
+          }), v.on("process-revert", function () {
+            e("DID_REVERT_ITEM_PROCESSING", {
+              id: h
+            });
+          }), e("DID_ADD_ITEM", {
+            id: h,
+            index: a,
+            interactionMethod: s
+          }), vt(e, n);
+          var g = n.options.server || {},
+              R = g.url,
+              O = g.load,
+              y = g.restore,
+              D = g.fetch;
+          v.load(o, ke(I === ce.INPUT ? G(o) && function (e) {
+            return (e.indexOf(":") > -1 || e.indexOf("//") > -1) && Tt(location.href) !== Tt(e);
+          }(o) ? Ze(R, D) : _t : Ze(R, I === ce.LIMBO ? y : O)), function (e, n, r) {
+            _e("LOAD_FILE", e, {
+              query: t
+            }).then(n)["catch"](r);
+          });
+        }
+      },
+      REQUEST_PREPARE_OUTPUT: function REQUEST_PREPARE_OUTPUT(e) {
+        var n = e.item,
+            r = e.ready;
+        n.archived || _e("PREPARE_OUTPUT", n.file, {
+          query: t,
+          item: n
+        }).then(function (e) {
+          _e("COMPLETE_PREPARE_OUTPUT", e, {
+            query: t,
+            item: n
+          }).then(function (e) {
+            n.archived || r(e);
+          });
+        });
+      },
+      COMPLETE_LOAD_ITEM: function COMPLETE_LOAD_ITEM(r) {
+        var o = r.item,
+            i = r.data,
+            a = i.success,
+            s = i.source,
+            u = t("GET_ITEM_INSERT_LOCATION");
+        x(u) && s && ht(n, u), e("DID_LOAD_ITEM", {
+          id: o.id,
+          error: null,
+          serverFileReference: o.origin === ce.INPUT ? null : s
+        }), a(ue(o)), o.origin !== ce.LOCAL ? o.origin !== ce.LIMBO ? t("IS_ASYNC") && n.options.instantUpload && e("REQUEST_ITEM_PROCESSING", {
+          query: o.id
+        }) : e("DID_COMPLETE_ITEM_PROCESSING", {
+          id: o.id,
+          error: null,
+          serverFileReference: s
+        }) : e("DID_LOAD_LOCAL_ITEM", {
+          id: o.id
+        });
+      },
+      RETRY_ITEM_LOAD: gt(n, function (e) {
+        e.retryLoad();
+      }),
+      REQUEST_ITEM_PROCESSING: gt(n, function (r, o, i) {
+        if (r.status === le.IDLE || r.status === le.PROCESSING_ERROR) r.status !== le.PROCESSING_QUEUED && (r.requestProcessing(), e("DID_REQUEST_ITEM_PROCESSING", {
+          id: r.id
+        }), e("PROCESS_ITEM", {
+          query: r,
+          success: o,
+          failure: i
+        }, !0));else {
+          var a = function a() {
+            setTimeout(function () {
+              e("REQUEST_ITEM_PROCESSING", {
+                query: r,
+                success: o,
+                failure: i
+              });
+            }, 32);
+          };
+
+          r.status === le.PROCESSING_COMPLETE || r.status === le.PROCESSING_REVERT_ERROR ? r.revert(ut(n.options.server.url, n.options.server.revert), t("GET_FORCE_REVERT")).then(a)["catch"](function () {}) : r.status === le.PROCESSING && r.abortProcessing().then(a);
+        }
+      }),
+      PROCESS_ITEM: gt(n, function (r, o, i) {
+        var a = t("GET_MAX_PARALLEL_UPLOADS");
+
+        if (t("GET_ITEMS_BY_STATUS", le.PROCESSING).length !== a) {
+          if (r.status !== le.PROCESSING) {
+            var s = function t() {
+              var r = n.processingQueue.shift();
+
+              if (r) {
+                var o = r.id,
+                    i = r.success,
+                    a = r.failure,
+                    s = he(n.items, o);
+                s && !s.archived ? e("PROCESS_ITEM", {
+                  query: o,
+                  success: i,
+                  failure: a
+                }, !0) : t();
+              }
+            };
+
+            r.onOnce("process-complete", function () {
+              o(ue(r)), s(), t("GET_ITEMS_BY_STATUS", le.PROCESSING_COMPLETE).length === n.items.length && e("DID_COMPLETE_ITEM_PROCESSING_ALL");
+            }), r.onOnce("process-error", function (e) {
+              i({
+                error: e,
+                file: ue(r)
+              }), s();
+            });
+            var u = n.options;
+            r.process(ct(st(u.server.url, u.server.process, u.name, {
+              chunkTransferId: r.transferId,
+              chunkServer: u.server.patch,
+              chunkUploads: u.chunkUploads,
+              chunkForce: u.chunkForce,
+              chunkSize: u.chunkSize,
+              chunkRetryDelays: u.chunkRetryDelays
+            })), function (n, o, i) {
+              _e("PREPARE_OUTPUT", n, {
+                query: t,
+                item: r
+              }).then(function (t) {
+                e("DID_PREPARE_OUTPUT", {
+                  id: r.id,
+                  file: t
+                }), o(t);
+              })["catch"](i);
+            });
+          }
+        } else n.processingQueue.push({
+          id: r.id,
+          success: o,
+          failure: i
+        });
+      }),
+      RETRY_ITEM_PROCESSING: gt(n, function (t) {
+        e("REQUEST_ITEM_PROCESSING", {
+          query: t
+        });
+      }),
+      REQUEST_REMOVE_ITEM: gt(n, function (n) {
+        mt(t("GET_BEFORE_REMOVE_FILE"), ue(n)).then(function (t) {
+          t && e("REMOVE_ITEM", {
+            query: n
+          });
+        });
+      }),
+      RELEASE_ITEM: gt(n, function (e) {
+        e.release();
+      }),
+      REMOVE_ITEM: gt(n, function (t, r) {
+        var o = function o() {
+          var o = t.id;
+          Et(n.items, o).archive(), e("DID_REMOVE_ITEM", {
+            error: null,
+            id: o,
+            item: t
+          }), vt(e, n), r(ue(t));
+        },
+            i = n.options.server;
+
+        t.origin === ce.LOCAL && i && x(i.remove) ? (e("DID_START_ITEM_REMOVE", {
+          id: t.id
+        }), i.remove(t.source, function () {
+          return o();
+        }, function (r) {
+          e("DID_THROW_ITEM_REMOVE_ERROR", {
+            id: t.id,
+            error: We("error", 0, r, null),
+            status: {
+              main: It(n.options.labelFileRemoveError)(r),
+              sub: n.options.labelTapToRetry
+            }
+          });
+        })) : o();
+      }),
+      ABORT_ITEM_LOAD: gt(n, function (e) {
+        e.abortLoad();
+      }),
+      ABORT_ITEM_PROCESSING: gt(n, function (t) {
+        t.serverId ? e("REVERT_ITEM_PROCESSING", {
+          id: t.id
+        }) : t.abortProcessing().then(function () {
+          n.options.instantUpload && e("REMOVE_ITEM", {
+            query: t.id
+          });
+        });
+      }),
+      REQUEST_REVERT_ITEM_PROCESSING: gt(n, function (r) {
+        if (n.options.instantUpload) {
+          var o = function o(t) {
+            t && e("REVERT_ITEM_PROCESSING", {
+              query: r
+            });
+          },
+              i = t("GET_BEFORE_REMOVE_FILE");
+
+          if (!i) return o(!0);
+          var a = i(ue(r));
+          return null == a ? o(!0) : "boolean" == typeof a ? o(a) : void ("function" == typeof a.then && a.then(o));
+        }
+
+        e("REVERT_ITEM_PROCESSING", {
+          query: r
+        });
+      }),
+      REVERT_ITEM_PROCESSING: gt(n, function (r) {
+        r.revert(ut(n.options.server.url, n.options.server.revert), t("GET_FORCE_REVERT")).then(function () {
+          (n.options.instantUpload || function (e) {
+            return !dt(e.file);
+          }(r)) && e("REMOVE_ITEM", {
+            query: r.id
+          });
+        })["catch"](function () {});
+      }),
+      SET_OPTIONS: function SET_OPTIONS(t) {
+        var n = t.options;
+        r(n, function (t, n) {
+          e("SET_" + Q(t, "_").toUpperCase(), {
+            value: n
+          });
+        });
+      }
+    };
+  },
+      Ot = function Ot(e) {
+    return e;
+  },
+      yt = function yt(e) {
+    return document.createElement(e);
+  },
+      Dt = function Dt(e, t) {
+    var n = e.childNodes[0];
+    n ? t !== n.nodeValue && (n.nodeValue = t) : (n = document.createTextNode(t), e.appendChild(n));
+  },
+      St = function St(e, t, n, r) {
+    var o = (r % 360 - 90) * Math.PI / 180;
+    return {
+      x: e + n * Math.cos(o),
+      y: t + n * Math.sin(o)
+    };
+  },
+      At = function At(e, t, n, r, o) {
+    var i = 1;
+    return o > r && o - r <= .5 && (i = 0), r > o && r - o >= .5 && (i = 0), function (e, t, n, r, o, i) {
+      var a = St(e, t, n, o),
+          s = St(e, t, n, r);
+      return ["M", a.x, a.y, "A", n, n, 0, i, 0, s.x, s.y].join(" ");
+    }(e, t, n, 360 * Math.min(.9999, r), 360 * Math.min(.9999, o), i);
+  },
+      bt = D({
+    tag: "div",
+    name: "progress-indicator",
+    ignoreRectUpdate: !0,
+    ignoreRect: !0,
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      n.spin = !1, n.progress = 0, n.opacity = 0;
+      var r = u("svg");
+      t.ref.path = u("path", {
+        "stroke-width": 2,
+        "stroke-linecap": "round"
+      }), r.appendChild(t.ref.path), t.ref.svg = r, t.appendChild(r);
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.props;
+
+      if (0 !== n.opacity) {
+        n.align && (t.element.dataset.align = n.align);
+        var r = parseInt(i(t.ref.path, "stroke-width"), 10),
+            o = .5 * t.rect.element.width,
+            a = 0,
+            s = 0;
+        n.spin ? (a = 0, s = .5) : (a = 0, s = n.progress);
+        var u = At(o, o, o - r, a, s);
+        i(t.ref.path, "d", u), i(t.ref.path, "stroke-opacity", n.spin || n.progress > 0 ? 1 : 0);
+      }
+    },
+    mixins: {
+      apis: ["progress", "spin", "align"],
+      styles: ["opacity"],
+      animations: {
+        opacity: {
+          type: "tween",
+          duration: 500
+        },
+        progress: {
+          type: "spring",
+          stiffness: .95,
+          damping: .65,
+          mass: 10
+        }
+      }
+    }
+  }),
+      Lt = D({
+    tag: "button",
+    attributes: {
+      type: "button"
+    },
+    ignoreRect: !0,
+    ignoreRectUpdate: !0,
+    name: "file-action-button",
+    mixins: {
+      apis: ["label"],
+      styles: ["translateX", "translateY", "scaleX", "scaleY", "opacity"],
+      animations: {
+        scaleX: "spring",
+        scaleY: "spring",
+        translateX: "spring",
+        translateY: "spring",
+        opacity: {
+          type: "tween",
+          duration: 250
+        }
+      },
+      listeners: !0
+    },
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      t.element.innerHTML = (n.icon || "") + "<span>" + n.label + "</span>", n.isDisabled = !1;
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.props,
+          r = n.isDisabled,
+          o = t.query("GET_DISABLED") || 0 === n.opacity;
+      o && !r ? (n.isDisabled = !0, i(t.element, "disabled", "disabled")) : !o && r && (n.isDisabled = !1, t.element.removeAttribute("disabled"));
+    }
+  }),
+      Pt = function Pt(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : ".";
+    return (e = Math.round(Math.abs(e))) < 1e3 ? e + " bytes" : e < wt ? Math.floor(e / Mt) + " KB" : e < Ct ? Nt(e / wt, 1, t) + " MB" : Nt(e / Ct, 2, t) + " GB";
+  },
+      Mt = 1e3,
+      wt = 1e6,
+      Ct = 1e9,
+      Nt = function Nt(e, t, n) {
+    return e.toFixed(t).split(".").filter(function (e) {
+      return "0" !== e;
+    }).join(n);
+  },
+      Gt = function Gt(e) {
+    var t = e.root,
+        n = e.props;
+    Dt(t.ref.fileSize, Pt(t.query("GET_ITEM_SIZE", n.id))), Dt(t.ref.fileName, Ot(t.query("GET_ITEM_NAME", n.id)));
+  },
+      Ut = function Ut(e) {
+    var t = e.root,
+        n = e.props;
+    q(t.query("GET_ITEM_SIZE", n.id)) || Dt(t.ref.fileSize, t.query("GET_LABEL_FILE_SIZE_NOT_AVAILABLE"));
+  },
+      Bt = D({
+    name: "file-info",
+    ignoreRect: !0,
+    ignoreRectUpdate: !0,
+    write: S({
+      DID_LOAD_ITEM: Gt,
+      DID_UPDATE_ITEM_META: Gt,
+      DID_THROW_ITEM_LOAD_ERROR: Ut,
+      DID_THROW_ITEM_INVALID: Ut
+    }),
+    didCreateView: function didCreateView(e) {
+      Te("CREATE_VIEW", Object.assign({}, e, {
+        view: e
+      }));
+    },
+    create: function create(e) {
+      var t = e.root,
+          n = e.props,
+          r = yt("span");
+      r.className = "filepond--file-info-main", i(r, "aria-hidden", "true"), t.appendChild(r), t.ref.fileName = r;
+      var o = yt("span");
+      o.className = "filepond--file-info-sub", t.appendChild(o), t.ref.fileSize = o, Dt(o, t.query("GET_LABEL_FILE_WAITING_FOR_SIZE")), Dt(r, Ot(t.query("GET_ITEM_NAME", n.id)));
+    },
+    mixins: {
+      styles: ["translateX", "translateY"],
+      animations: {
+        translateX: "spring",
+        translateY: "spring"
+      }
+    }
+  }),
+      Ft = function Ft(e) {
+    return Math.round(100 * e);
+  },
+      qt = function qt(e) {
+    var t = e.root,
+        n = e.action,
+        r = null === n.progress ? t.query("GET_LABEL_FILE_LOADING") : t.query("GET_LABEL_FILE_LOADING") + " " + Ft(n.progress) + "%";
+    Dt(t.ref.main, r), Dt(t.ref.sub, t.query("GET_LABEL_TAP_TO_CANCEL"));
+  },
+      Vt = function Vt(e) {
+    var t = e.root;
+    Dt(t.ref.main, ""), Dt(t.ref.sub, "");
+  },
+      xt = function xt(e) {
+    var t = e.root,
+        n = e.action;
+    Dt(t.ref.main, n.status.main), Dt(t.ref.sub, n.status.sub);
+  },
+      Yt = D({
+    name: "file-status",
+    ignoreRect: !0,
+    ignoreRectUpdate: !0,
+    write: S({
+      DID_LOAD_ITEM: Vt,
+      DID_REVERT_ITEM_PROCESSING: Vt,
+      DID_REQUEST_ITEM_PROCESSING: function DID_REQUEST_ITEM_PROCESSING(e) {
+        var t = e.root;
+        Dt(t.ref.main, t.query("GET_LABEL_FILE_PROCESSING")), Dt(t.ref.sub, t.query("GET_LABEL_TAP_TO_CANCEL"));
+      },
+      DID_ABORT_ITEM_PROCESSING: function DID_ABORT_ITEM_PROCESSING(e) {
+        var t = e.root;
+        Dt(t.ref.main, t.query("GET_LABEL_FILE_PROCESSING_ABORTED")), Dt(t.ref.sub, t.query("GET_LABEL_TAP_TO_RETRY"));
+      },
+      DID_COMPLETE_ITEM_PROCESSING: function DID_COMPLETE_ITEM_PROCESSING(e) {
+        var t = e.root;
+        Dt(t.ref.main, t.query("GET_LABEL_FILE_PROCESSING_COMPLETE")), Dt(t.ref.sub, t.query("GET_LABEL_TAP_TO_UNDO"));
+      },
+      DID_UPDATE_ITEM_PROCESS_PROGRESS: function DID_UPDATE_ITEM_PROCESS_PROGRESS(e) {
+        var t = e.root,
+            n = e.action,
+            r = null === n.progress ? t.query("GET_LABEL_FILE_PROCESSING") : t.query("GET_LABEL_FILE_PROCESSING") + " " + Ft(n.progress) + "%";
+        Dt(t.ref.main, r), Dt(t.ref.sub, t.query("GET_LABEL_TAP_TO_CANCEL"));
+      },
+      DID_UPDATE_ITEM_LOAD_PROGRESS: qt,
+      DID_THROW_ITEM_LOAD_ERROR: xt,
+      DID_THROW_ITEM_INVALID: xt,
+      DID_THROW_ITEM_PROCESSING_ERROR: xt,
+      DID_THROW_ITEM_PROCESSING_REVERT_ERROR: xt,
+      DID_THROW_ITEM_REMOVE_ERROR: xt
+    }),
+    didCreateView: function didCreateView(e) {
+      Te("CREATE_VIEW", Object.assign({}, e, {
+        view: e
+      }));
+    },
+    create: function create(e) {
+      var t = e.root,
+          n = (e.props, yt("span"));
+      n.className = "filepond--file-status-main", t.appendChild(n), t.ref.main = n;
+      var r = yt("span");
+      r.className = "filepond--file-status-sub", t.appendChild(r), t.ref.sub = r, qt({
+        root: t,
+        action: {
+          progress: null
+        }
+      });
+    },
+    mixins: {
+      styles: ["translateX", "translateY", "opacity"],
+      animations: {
+        opacity: {
+          type: "tween",
+          duration: 250
+        },
+        translateX: "spring",
+        translateY: "spring"
+      }
+    }
+  }),
+      jt = {
+    AbortItemLoad: {
+      label: "GET_LABEL_BUTTON_ABORT_ITEM_LOAD",
+      action: "ABORT_ITEM_LOAD",
+      className: "filepond--action-abort-item-load",
+      align: "LOAD_INDICATOR_POSITION"
+    },
+    RetryItemLoad: {
+      label: "GET_LABEL_BUTTON_RETRY_ITEM_LOAD",
+      action: "RETRY_ITEM_LOAD",
+      icon: "GET_ICON_RETRY",
+      className: "filepond--action-retry-item-load",
+      align: "BUTTON_PROCESS_ITEM_POSITION"
+    },
+    RemoveItem: {
+      label: "GET_LABEL_BUTTON_REMOVE_ITEM",
+      action: "REQUEST_REMOVE_ITEM",
+      icon: "GET_ICON_REMOVE",
+      className: "filepond--action-remove-item",
+      align: "BUTTON_REMOVE_ITEM_POSITION"
+    },
+    ProcessItem: {
+      label: "GET_LABEL_BUTTON_PROCESS_ITEM",
+      action: "REQUEST_ITEM_PROCESSING",
+      icon: "GET_ICON_PROCESS",
+      className: "filepond--action-process-item",
+      align: "BUTTON_PROCESS_ITEM_POSITION"
+    },
+    AbortItemProcessing: {
+      label: "GET_LABEL_BUTTON_ABORT_ITEM_PROCESSING",
+      action: "ABORT_ITEM_PROCESSING",
+      className: "filepond--action-abort-item-processing",
+      align: "BUTTON_PROCESS_ITEM_POSITION"
+    },
+    RetryItemProcessing: {
+      label: "GET_LABEL_BUTTON_RETRY_ITEM_PROCESSING",
+      action: "RETRY_ITEM_PROCESSING",
+      icon: "GET_ICON_RETRY",
+      className: "filepond--action-retry-item-processing",
+      align: "BUTTON_PROCESS_ITEM_POSITION"
+    },
+    RevertItemProcessing: {
+      label: "GET_LABEL_BUTTON_UNDO_ITEM_PROCESSING",
+      action: "REQUEST_REVERT_ITEM_PROCESSING",
+      icon: "GET_ICON_UNDO",
+      className: "filepond--action-revert-item-processing",
+      align: "BUTTON_PROCESS_ITEM_POSITION"
+    }
+  },
+      Ht = [];
+
+  r(jt, function (e) {
+    Ht.push(e);
+  });
+
+  var kt,
+      Xt = function Xt(e) {
+    var t = e.ref.buttonRemoveItem.rect.element;
+    return t.hidden ? null : t.width + t.left;
+  },
+      zt = function zt(e) {
+    return Math.floor(e.ref.buttonRemoveItem.rect.element.height / 4);
+  },
+      Wt = function Wt(e) {
+    return Math.floor(e.ref.buttonRemoveItem.rect.element.left / 2);
+  },
+      Qt = function Qt(e) {
+    return e.query("GET_STYLE_BUTTON_REMOVE_ITEM_POSITION");
+  },
+      Zt = {
+    buttonAbortItemLoad: {
+      opacity: 0
+    },
+    buttonRetryItemLoad: {
+      opacity: 0
+    },
+    buttonRemoveItem: {
+      opacity: 0
+    },
+    buttonProcessItem: {
+      opacity: 0
+    },
+    buttonAbortItemProcessing: {
+      opacity: 0
+    },
+    buttonRetryItemProcessing: {
+      opacity: 0
+    },
+    buttonRevertItemProcessing: {
+      opacity: 0
+    },
+    loadProgressIndicator: {
+      opacity: 0,
+      align: function align(e) {
+        return e.query("GET_STYLE_LOAD_INDICATOR_POSITION");
+      }
+    },
+    processProgressIndicator: {
+      opacity: 0,
+      align: function align(e) {
+        return e.query("GET_STYLE_PROGRESS_INDICATOR_POSITION");
+      }
+    },
+    processingCompleteIndicator: {
+      opacity: 0,
+      scaleX: .75,
+      scaleY: .75
+    },
+    info: {
+      translateX: 0,
+      translateY: 0,
+      opacity: 0
+    },
+    status: {
+      translateX: 0,
+      translateY: 0,
+      opacity: 0
+    }
+  },
+      $t = {
+    buttonRemoveItem: {
+      opacity: 1
+    },
+    buttonProcessItem: {
+      opacity: 1
+    },
+    info: {
+      translateX: Xt
+    },
+    status: {
+      translateX: Xt
+    }
+  },
+      Kt = {
+    buttonAbortItemProcessing: {
+      opacity: 1
+    },
+    processProgressIndicator: {
+      opacity: 1
+    },
+    status: {
+      opacity: 1
+    }
+  },
+      Jt = {
+    DID_THROW_ITEM_INVALID: {
+      buttonRemoveItem: {
+        opacity: 1
+      },
+      info: {
+        translateX: Xt
+      },
+      status: {
+        translateX: Xt,
+        opacity: 1
+      }
+    },
+    DID_START_ITEM_LOAD: {
+      buttonAbortItemLoad: {
+        opacity: 1
+      },
+      loadProgressIndicator: {
+        opacity: 1
+      },
+      status: {
+        opacity: 1
+      }
+    },
+    DID_THROW_ITEM_LOAD_ERROR: {
+      buttonRetryItemLoad: {
+        opacity: 1
+      },
+      buttonRemoveItem: {
+        opacity: 1
+      },
+      info: {
+        translateX: Xt
+      },
+      status: {
+        opacity: 1
+      }
+    },
+    DID_START_ITEM_REMOVE: {
+      processProgressIndicator: {
+        opacity: 1,
+        align: Qt
+      },
+      info: {
+        translateX: Xt
+      },
+      status: {
+        opacity: 0
+      }
+    },
+    DID_THROW_ITEM_REMOVE_ERROR: {
+      processProgressIndicator: {
+        opacity: 0,
+        align: Qt
+      },
+      buttonRemoveItem: {
+        opacity: 1
+      },
+      info: {
+        translateX: Xt
+      },
+      status: {
+        opacity: 1,
+        translateX: Xt
+      }
+    },
+    DID_LOAD_ITEM: $t,
+    DID_LOAD_LOCAL_ITEM: {
+      buttonRemoveItem: {
+        opacity: 1
+      },
+      info: {
+        translateX: Xt
+      },
+      status: {
+        translateX: Xt
+      }
+    },
+    DID_START_ITEM_PROCESSING: Kt,
+    DID_REQUEST_ITEM_PROCESSING: Kt,
+    DID_UPDATE_ITEM_PROCESS_PROGRESS: Kt,
+    DID_COMPLETE_ITEM_PROCESSING: {
+      buttonRevertItemProcessing: {
+        opacity: 1
+      },
+      info: {
+        opacity: 1
+      },
+      status: {
+        opacity: 1
+      }
+    },
+    DID_THROW_ITEM_PROCESSING_ERROR: {
+      buttonRemoveItem: {
+        opacity: 1
+      },
+      buttonRetryItemProcessing: {
+        opacity: 1
+      },
+      status: {
+        opacity: 1
+      },
+      info: {
+        translateX: Xt
+      }
+    },
+    DID_THROW_ITEM_PROCESSING_REVERT_ERROR: {
+      buttonRevertItemProcessing: {
+        opacity: 1
+      },
+      status: {
+        opacity: 1
+      },
+      info: {
+        opacity: 1
+      }
+    },
+    DID_ABORT_ITEM_PROCESSING: {
+      buttonRemoveItem: {
+        opacity: 1
+      },
+      buttonProcessItem: {
+        opacity: 1
+      },
+      info: {
+        translateX: Xt
+      },
+      status: {
+        opacity: 1
+      }
+    },
+    DID_REVERT_ITEM_PROCESSING: $t
+  },
+      en = D({
+    create: function create(e) {
+      var t = e.root;
+      t.element.innerHTML = t.query("GET_ICON_DONE");
+    },
+    name: "processing-complete-indicator",
+    ignoreRect: !0,
+    mixins: {
+      styles: ["scaleX", "scaleY", "opacity"],
+      animations: {
+        scaleX: "spring",
+        scaleY: "spring",
+        opacity: {
+          type: "tween",
+          duration: 250
+        }
+      }
+    }
+  }),
+      tn = S({
+    DID_SET_LABEL_BUTTON_ABORT_ITEM_PROCESSING: function DID_SET_LABEL_BUTTON_ABORT_ITEM_PROCESSING(e) {
+      var t = e.root,
+          n = e.action;
+      t.ref.buttonAbortItemProcessing.label = n.value;
+    },
+    DID_SET_LABEL_BUTTON_ABORT_ITEM_LOAD: function DID_SET_LABEL_BUTTON_ABORT_ITEM_LOAD(e) {
+      var t = e.root,
+          n = e.action;
+      t.ref.buttonAbortItemLoad.label = n.value;
+    },
+    DID_SET_LABEL_BUTTON_ABORT_ITEM_REMOVAL: function DID_SET_LABEL_BUTTON_ABORT_ITEM_REMOVAL(e) {
+      var t = e.root,
+          n = e.action;
+      t.ref.buttonAbortItemRemoval.label = n.value;
+    },
+    DID_REQUEST_ITEM_PROCESSING: function DID_REQUEST_ITEM_PROCESSING(e) {
+      var t = e.root;
+      t.ref.processProgressIndicator.spin = !0, t.ref.processProgressIndicator.progress = 0;
+    },
+    DID_START_ITEM_LOAD: function DID_START_ITEM_LOAD(e) {
+      var t = e.root;
+      t.ref.loadProgressIndicator.spin = !0, t.ref.loadProgressIndicator.progress = 0;
+    },
+    DID_START_ITEM_REMOVE: function DID_START_ITEM_REMOVE(e) {
+      var t = e.root;
+      t.ref.processProgressIndicator.spin = !0, t.ref.processProgressIndicator.progress = 0;
+    },
+    DID_UPDATE_ITEM_LOAD_PROGRESS: function DID_UPDATE_ITEM_LOAD_PROGRESS(e) {
+      var t = e.root,
+          n = e.action;
+      t.ref.loadProgressIndicator.spin = !1, t.ref.loadProgressIndicator.progress = n.progress;
+    },
+    DID_UPDATE_ITEM_PROCESS_PROGRESS: function DID_UPDATE_ITEM_PROCESS_PROGRESS(e) {
+      var t = e.root,
+          n = e.action;
+      t.ref.processProgressIndicator.spin = !1, t.ref.processProgressIndicator.progress = n.progress;
+    }
+  }),
+      nn = D({
+    create: function create(e) {
+      var t = e.root,
+          n = e.props.id,
+          o = t.query("GET_ALLOW_REVERT"),
+          i = t.query("GET_INSTANT_UPLOAD"),
+          a = t.query("IS_ASYNC"),
+          s = a ? Ht.concat() : Ht.filter(function (e) {
+        return !/Process/.test(e);
+      });
+
+      if (a && !o) {
+        s.splice(-1, 1);
+        var u = Jt.DID_COMPLETE_ITEM_PROCESSING;
+        u.info.translateX = Wt, u.info.translateY = zt, u.status.translateY = zt, u.processingCompleteIndicator = {
+          opacity: 1,
+          scaleX: 1,
+          scaleY: 1
+        };
+      }
+
+      i && o && (jt.RevertItemProcessing.label = "GET_LABEL_BUTTON_REMOVE_ITEM", jt.RevertItemProcessing.icon = "GET_ICON_REMOVE"), r(jt, function (e, r) {
+        var o = t.createChildView(Lt, {
+          label: t.query(r.label),
+          icon: t.query(r.icon),
+          opacity: 0
+        });
+        s.includes(e) && t.appendChildView(o), o.element.dataset.align = t.query("GET_STYLE_" + r.align), o.element.classList.add(r.className), o.on("click", function (e) {
+          e.stopPropagation(), t.dispatch(r.action, {
+            query: n
+          });
+        }), t.ref["button" + e] = o;
+      }), t.ref.info = t.appendChildView(t.createChildView(Bt, {
+        id: n
+      })), t.ref.status = t.appendChildView(t.createChildView(Yt, {
+        id: n
+      })), t.ref.processingCompleteIndicator = t.appendChildView(t.createChildView(en)), t.ref.processingCompleteIndicator.element.dataset.align = t.query("GET_STYLE_BUTTON_PROCESS_ITEM_POSITION");
+      var l = t.appendChildView(t.createChildView(bt, {
+        opacity: 0,
+        align: t.query("GET_STYLE_LOAD_INDICATOR_POSITION")
+      }));
+      l.element.classList.add("filepond--load-indicator"), t.ref.loadProgressIndicator = l;
+      var c = t.appendChildView(t.createChildView(bt, {
+        opacity: 0,
+        align: t.query("GET_STYLE_PROGRESS_INDICATOR_POSITION")
+      }));
+      c.element.classList.add("filepond--process-indicator"), t.ref.processProgressIndicator = c, t.ref.activeStyles = [];
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.actions,
+          o = e.props;
+      tn({
+        root: t,
+        actions: n,
+        props: o
+      });
+      var i = n.concat().filter(function (e) {
+        return /^DID_/.test(e.type);
+      }).reverse().find(function (e) {
+        return Jt[e.type];
+      });
+
+      if (i) {
+        t.ref.activeStyles = [];
+        var a = Jt[i.type];
+        r(Zt, function (e, n) {
+          var o = t.ref[e];
+          r(n, function (n, r) {
+            var i = a[e] && void 0 !== a[e][n] ? a[e][n] : r;
+            t.ref.activeStyles.push({
+              control: o,
+              key: n,
+              value: i
+            });
+          });
+        });
+      }
+
+      t.ref.activeStyles.forEach(function (e) {
+        var n = e.control,
+            r = e.key,
+            o = e.value;
+        n[r] = "function" == typeof o ? o(t) : o;
+      });
+    },
+    didCreateView: function didCreateView(e) {
+      Te("CREATE_VIEW", Object.assign({}, e, {
+        view: e
+      }));
+    },
+    name: "file"
+  }),
+      rn = D({
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      t.ref.fileName = yt("legend"), t.appendChild(t.ref.fileName), t.ref.file = t.appendChildView(t.createChildView(nn, {
+        id: n.id
+      }));
+      var r = yt("input");
+      r.type = "hidden", r.name = t.query("GET_NAME"), r.disabled = t.query("GET_DISABLED"), t.ref.data = r, t.appendChild(r);
+    },
+    ignoreRect: !0,
+    write: S({
+      DID_SET_DISABLED: function DID_SET_DISABLED(e) {
+        var t = e.root;
+        t.ref.data.disabled = t.query("GET_DISABLED");
+      },
+      DID_LOAD_ITEM: function DID_LOAD_ITEM(e) {
+        var t = e.root,
+            n = e.action,
+            r = e.props;
+        t.ref.data.value = n.serverFileReference, Dt(t.ref.fileName, Ot(t.query("GET_ITEM_NAME", r.id)));
+      },
+      DID_REMOVE_ITEM: function DID_REMOVE_ITEM(e) {
+        e.root.ref.data.removeAttribute("value");
+      },
+      DID_COMPLETE_ITEM_PROCESSING: function DID_COMPLETE_ITEM_PROCESSING(e) {
+        var t = e.root,
+            n = e.action;
+        t.ref.data.value = n.serverFileReference;
+      },
+      DID_REVERT_ITEM_PROCESSING: function DID_REVERT_ITEM_PROCESSING(e) {
+        e.root.ref.data.removeAttribute("value");
+      }
+    }),
+    didCreateView: function didCreateView(e) {
+      Te("CREATE_VIEW", Object.assign({}, e, {
+        view: e
+      }));
+    },
+    tag: "fieldset",
+    name: "file-wrapper"
+  }),
+      on = {
+    type: "spring",
+    damping: .6,
+    mass: 7
+  },
+      an = function an(e, t, n) {
+    var r = D({
+      name: "panel-" + t.name + " filepond--" + n,
+      mixins: t.mixins,
+      ignoreRectUpdate: !0
+    }),
+        o = e.createChildView(r, t.props);
+    e.ref[t.name] = e.appendChildView(o);
+  },
+      sn = D({
+    name: "panel",
+    write: function write(e) {
+      var t = e.root,
+          n = e.props;
+
+      if (null !== t.ref.scalable && n.scalable === t.ref.scalable || (t.ref.scalable = !C(n.scalable) || n.scalable, t.element.dataset.scalable = t.ref.scalable), n.height) {
+        var r = t.ref.top.rect.element,
+            o = t.ref.bottom.rect.element,
+            i = Math.max(r.height + o.height, n.height);
+        t.ref.center.translateY = r.height, t.ref.center.scaleY = (i - r.height - o.height) / 100, t.ref.bottom.translateY = i - o.height;
+      }
+    },
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      [{
+        name: "top"
+      }, {
+        name: "center",
+        props: {
+          translateY: null,
+          scaleY: null
+        },
+        mixins: {
+          animations: {
+            scaleY: on
+          },
+          styles: ["translateY", "scaleY"]
+        }
+      }, {
+        name: "bottom",
+        props: {
+          translateY: null
+        },
+        mixins: {
+          animations: {
+            translateY: on
+          },
+          styles: ["translateY"]
+        }
+      }].forEach(function (e) {
+        an(t, e, n.name);
+      }), t.element.classList.add("filepond--" + n.name), t.ref.scalable = null;
+    },
+    ignoreRect: !0,
+    mixins: {
+      apis: ["height", "scalable"]
+    }
+  }),
+      un = {
+    type: "spring",
+    stiffness: .75,
+    damping: .45,
+    mass: 10
+  },
+      ln = {
+    DID_START_ITEM_LOAD: "busy",
+    DID_UPDATE_ITEM_LOAD_PROGRESS: "loading",
+    DID_THROW_ITEM_INVALID: "load-invalid",
+    DID_THROW_ITEM_LOAD_ERROR: "load-error",
+    DID_LOAD_ITEM: "idle",
+    DID_THROW_ITEM_REMOVE_ERROR: "remove-error",
+    DID_START_ITEM_REMOVE: "busy",
+    DID_START_ITEM_PROCESSING: "busy",
+    DID_REQUEST_ITEM_PROCESSING: "busy",
+    DID_UPDATE_ITEM_PROCESS_PROGRESS: "processing",
+    DID_COMPLETE_ITEM_PROCESSING: "processing-complete",
+    DID_THROW_ITEM_PROCESSING_ERROR: "processing-error",
+    DID_THROW_ITEM_PROCESSING_REVERT_ERROR: "processing-revert-error",
+    DID_ABORT_ITEM_PROCESSING: "cancelled",
+    DID_REVERT_ITEM_PROCESSING: "idle"
+  },
+      cn = S({
+    DID_UPDATE_PANEL_HEIGHT: function DID_UPDATE_PANEL_HEIGHT(e) {
+      var t = e.root,
+          n = e.action.height;
+      t.height = n;
+    }
+  }),
+      fn = D({
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      t.ref.handleClick = function () {
+        return t.dispatch("DID_ACTIVATE_ITEM", {
+          id: n.id
+        });
+      }, t.element.id = "filepond--item-" + n.id, t.element.addEventListener("click", t.ref.handleClick), t.ref.container = t.appendChildView(t.createChildView(rn, {
+        id: n.id
+      })), t.ref.panel = t.appendChildView(t.createChildView(sn, {
+        name: "item-panel"
+      })), t.ref.panel.height = null, n.markedForRemoval = !1;
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.actions,
+          r = e.props,
+          o = e.shouldOptimize,
+          i = n.concat().filter(function (e) {
+        return /^DID_/.test(e.type);
+      }).reverse().find(function (e) {
+        return ln[e.type];
+      });
+      i && i.type !== r.currentState && (r.currentState = i.type, t.element.dataset.filepondItemState = ln[r.currentState] || "");
+      var a = t.query("GET_ITEM_PANEL_ASPECT_RATIO") || t.query("GET_PANEL_ASPECT_RATIO");
+      a ? o || (t.height = t.rect.element.width * a) : (cn({
+        root: t,
+        actions: n,
+        props: r
+      }), !t.height && t.ref.container.rect.element.height > 0 && (t.height = t.ref.container.rect.element.height)), o && (t.ref.panel.height = null), t.ref.panel.height = t.height;
+    },
+    destroy: function destroy(e) {
+      var t = e.root,
+          n = e.props;
+      t.element.removeEventListener("click", t.ref.handleClick), t.dispatch("RELEASE_ITEM", {
+        query: n.id
+      });
+    },
+    tag: "li",
+    name: "item",
+    mixins: {
+      apis: ["id", "interactionMethod", "markedForRemoval", "spawnDate"],
+      styles: ["translateX", "translateY", "scaleX", "scaleY", "opacity", "height"],
+      animations: {
+        scaleX: "spring",
+        scaleY: "spring",
+        translateX: un,
+        translateY: un,
+        opacity: {
+          type: "tween",
+          duration: 150
+        }
+      }
+    }
+  }),
+      dn = function dn(e, t) {
+    if (t) {
+      var n = e.rect.element.width,
+          r = e.childViews,
+          o = r.length,
+          i = null;
+      if (0 === o || t.top < r[0].rect.element.top) return -1;
+      var a = r[0].rect.element,
+          s = a.marginLeft + a.marginRight,
+          u = a.width + s,
+          l = Math.round(n / u);
+
+      if (1 === l) {
+        for (var c = 0; c < o; c++) {
+          var f = r[c],
+              d = f.rect.outer.top + .5 * f.rect.element.height;
+          if (t.top < d) return c;
+        }
+
+        return o;
+      }
+
+      for (var p = a.marginTop + a.marginBottom, E = a.height + p, _ = 0; _ < o; _++) {
+        var T = _ % l * u,
+            I = Math.floor(_ / l) * E,
+            v = I - a.marginTop,
+            m = T + u,
+            h = I + E + a.marginBottom;
+
+        if (t.top < h && t.top > v) {
+          if (t.left < m) return _;
+          i = _ !== o - 1 ? _ : null;
+        }
+      }
+
+      return null !== i ? i : o;
+    }
+  },
+      pn = function pn(e, t, n) {
+    var r = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : 0,
+        o = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : 1;
+    e.translateX = t, e.translateY = n, Date.now() > e.spawnDate && (0 === e.opacity && En(e, t, n, r, o), e.scaleX = 1, e.scaleY = 1, e.opacity = 1);
+  },
+      En = function En(e, t, n, r, o) {
+    e.interactionMethod === ne ? (e.translateX = null, e.translateX = t, e.translateY = null, e.translateY = n) : e.interactionMethod === J ? (e.translateX = null, e.translateX = t - 20 * r, e.translateY = null, e.translateY = n - 10 * o, e.scaleX = .8, e.scaleY = .8) : e.interactionMethod === ee ? (e.translateY = null, e.translateY = n - 30) : e.interactionMethod === K && (e.translateX = null, e.translateX = t - 30, e.translateY = null);
+  },
+      _n = S({
+    DID_ADD_ITEM: function DID_ADD_ITEM(e) {
+      var t = e.root,
+          n = e.action,
+          r = n.id,
+          o = n.index,
+          i = n.interactionMethod;
+      t.ref.addIndex = o;
+      var a = Date.now(),
+          s = a,
+          u = 1;
+
+      if (i !== ne) {
+        u = 0;
+        var l = t.query("GET_ITEM_INSERT_INTERVAL"),
+            c = a - t.ref.lastItemSpanwDate;
+        s = c < l ? a + (l - c) : a;
+      }
+
+      t.ref.lastItemSpanwDate = s, t.appendChildView(t.createChildView(fn, {
+        spawnDate: s,
+        id: r,
+        opacity: u,
+        interactionMethod: i
+      }), o);
+    },
+    DID_REMOVE_ITEM: function DID_REMOVE_ITEM(e) {
+      var t = e.root,
+          n = e.action.id,
+          r = t.childViews.find(function (e) {
+        return e.id === n;
+      });
+      r && (r.scaleX = .9, r.scaleY = .9, r.opacity = 0, r.markedForRemoval = !0);
+    }
+  }),
+      Tn = D({
+    create: function create(e) {
+      var t = e.root;
+      i(t.element, "role", "list"), t.ref.lastItemSpanwDate = Date.now();
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.props,
+          r = e.actions,
+          o = e.shouldOptimize;
+
+      _n({
+        root: t,
+        props: n,
+        actions: r
+      });
+
+      var i = n.dragCoordinates,
+          a = i ? dn(t, i) : null,
+          s = t.rect.element.width,
+          u = t.childViews.filter(function (e) {
+        return e.rect.element.height;
+      }),
+          l = t.query("GET_ACTIVE_ITEMS").map(function (e) {
+        return u.find(function (t) {
+          return t.id === e.id;
+        });
+      }).filter(function (e) {
+        return e;
+      }),
+          c = t.ref.addIndex || null;
+      t.ref.addIndex = null;
+      var f = 0,
+          d = 0,
+          p = 0;
+
+      if (0 !== l.length) {
+        var E = l[0].rect.element,
+            _ = E.marginTop + E.marginBottom,
+            T = E.marginLeft + E.marginRight,
+            I = E.width + T,
+            v = E.height + _,
+            m = Math.round(s / I);
+
+        if (1 === m) {
+          var h = 0,
+              g = 0;
+          l.forEach(function (e, t) {
+            if (a) {
+              var n = t - a;
+              g = -2 === n ? .25 * -_ : -1 === n ? .75 * -_ : 0 === n ? .75 * _ : 1 === n ? .25 * _ : 0;
+            }
+
+            o && (e.translateX = null, e.translateY = null), e.markedForRemoval || pn(e, 0, h + g);
+            var r = (e.rect.element.height + _) * (e.markedForRemoval ? e.opacity : 1);
+            h += r;
+          });
+        } else {
+          var R = 0,
+              O = 0;
+          l.forEach(function (e, t) {
+            t === a && (f = 1), t === c && (p += 1), e.markedForRemoval && e.opacity < .5 && (d -= 1);
+            var n = t + p + f + d,
+                r = n % m,
+                i = Math.floor(n / m),
+                s = r * I,
+                u = i * v,
+                l = Math.sign(s - R),
+                E = Math.sign(u - O);
+            R = s, O = u, e.markedForRemoval || (o && (e.translateX = null, e.translateY = null), pn(e, s, u, l, E));
+          });
+        }
+      }
+    },
+    tag: "ul",
+    name: "list",
+    didWriteView: function didWriteView(e) {
+      var t = e.root;
+      t.childViews.filter(function (e) {
+        return e.markedForRemoval && 0 === e.opacity && e.resting;
+      }).forEach(function (e) {
+        e._destroy(), t.removeChildView(e);
+      });
+    },
+    filterFrameActionsForChild: function filterFrameActionsForChild(e, t) {
+      return t.filter(function (t) {
+        return !t.data || !t.data.id || e.id === t.data.id;
+      });
+    },
+    mixins: {
+      apis: ["dragCoordinates"]
+    }
+  }),
+      In = S({
+    DID_DRAG: function DID_DRAG(e) {
+      var t = e.root,
+          n = e.props,
+          r = e.action;
+      t.query("GET_ITEM_INSERT_LOCATION_FREEDOM") && (n.dragCoordinates = {
+        left: r.position.scopeLeft - t.ref.list.rect.element.left,
+        top: r.position.scopeTop - (t.rect.outer.top + t.rect.element.marginTop + t.rect.element.scrollTop)
+      });
+    },
+    DID_END_DRAG: function DID_END_DRAG(e) {
+      e.props.dragCoordinates = null;
+    }
+  }),
+      vn = D({
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      t.ref.list = t.appendChildView(t.createChildView(Tn)), n.dragCoordinates = null, n.overflowing = !1;
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.props,
+          r = e.actions;
+
+      if (In({
+        root: t,
+        props: n,
+        actions: r
+      }), t.ref.list.dragCoordinates = n.dragCoordinates, n.overflowing && !n.overflow && (n.overflowing = !1, t.element.dataset.state = "", t.height = null), n.overflow) {
+        var o = Math.round(n.overflow);
+        o !== t.height && (n.overflowing = !0, t.element.dataset.state = "overflow", t.height = o);
+      }
+    },
+    name: "list-scroller",
+    mixins: {
+      apis: ["overflow", "dragCoordinates"],
+      styles: ["height", "translateY"],
+      animations: {
+        translateY: "spring"
+      }
+    }
+  }),
+      mn = function mn(e, t, n) {
+    var r = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : "";
+    n ? i(e, t, r) : e.removeAttribute(t);
+  },
+      hn = function hn(e) {
+    var t = e.root,
+        n = (e.action, t.query("GET_DISABLED")),
+        r = t.query("GET_ALLOW_BROWSE"),
+        o = n || !r;
+    mn(t.element, "disabled", o);
+  },
+      gn = function gn(e) {
+    var t = e.root,
+        n = t.element;
+    t.query("GET_TOTAL_ITEMS") > 0 ? (mn(n, "required", !1), mn(n, "name", !1)) : (mn(n, "name", !0, t.query("GET_NAME")), t.query("GET_CHECK_VALIDITY") && n.setCustomValidity(""), t.query("GET_REQUIRED") && mn(n, "required", !0));
+  },
+      Rn = D({
+    tag: "input",
+    name: "browser",
+    ignoreRect: !0,
+    ignoreRectUpdate: !0,
+    attributes: {
+      type: "file"
+    },
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      t.element.id = "filepond--browser-" + n.id, i(t.element, "name", t.query("GET_NAME")), i(t.element, "aria-controls", "filepond--assistant-" + n.id), i(t.element, "aria-labelledby", "filepond--drop-label-" + n.id), t.ref.handleChange = function (e) {
+        if (t.element.value) {
+          var r = Array.from(t.element.files);
+          setTimeout(function () {
+            n.onload(r), function (e) {
+              if (e && "" !== e.value) {
+                try {
+                  e.value = "";
+                } catch (e) {}
+
+                if (e.value) {
+                  var t = yt("form"),
+                      n = e.parentNode,
+                      r = e.nextSibling;
+                  t.appendChild(e), t.reset(), r ? n.insertBefore(e, r) : n.appendChild(e);
+                }
+              }
+            }(t.element);
+          }, 250);
+        }
+      }, t.element.addEventListener("change", t.ref.handleChange);
+    },
+    destroy: function destroy(e) {
+      var t = e.root;
+      t.element.removeEventListener("change", t.ref.handleChange);
+    },
+    write: S({
+      DID_LOAD_ITEM: gn,
+      DID_REMOVE_ITEM: gn,
+      DID_THROW_ITEM_INVALID: function DID_THROW_ITEM_INVALID(e) {
+        var t = e.root;
+        t.query("GET_CHECK_VALIDITY") && t.element.setCustomValidity(t.query("GET_LABEL_INVALID_FIELD"));
+      },
+      DID_SET_DISABLED: hn,
+      DID_SET_ALLOW_BROWSE: hn,
+      DID_SET_ALLOW_MULTIPLE: function DID_SET_ALLOW_MULTIPLE(e) {
+        var t = e.root,
+            n = e.action;
+        mn(t.element, "multiple", n.value);
+      },
+      DID_SET_ACCEPTED_FILE_TYPES: function DID_SET_ACCEPTED_FILE_TYPES(e) {
+        var t = e.root,
+            n = e.action;
+        mn(t.element, "accept", !!n.value, n.value ? n.value.join(",") : "");
+      },
+      DID_SET_CAPTURE_METHOD: function DID_SET_CAPTURE_METHOD(e) {
+        var t = e.root,
+            n = e.action;
+        mn(t.element, "capture", !!n.value, !0 === n.value ? "" : n.value);
+      },
+      DID_SET_REQUIRED: function DID_SET_REQUIRED(e) {
+        var t = e.root;
+        e.action.value ? 0 === t.query("GET_TOTAL_ITEMS") && mn(t.element, "required", !0) : mn(t.element, "required", !1);
+      }
+    })
+  }),
+      On = 13,
+      yn = 32,
+      Dn = function Dn(e, t) {
+    e.innerHTML = t;
+    var n = e.querySelector(".filepond--label-action");
+    return n && i(n, "tabindex", "0"), t;
+  },
+      Sn = D({
+    name: "drop-label",
+    ignoreRect: !0,
+    create: function create(e) {
+      var t = e.root,
+          n = e.props,
+          r = yt("label");
+      i(r, "for", "filepond--browser-" + n.id), i(r, "id", "filepond--drop-label-" + n.id), i(r, "aria-hidden", "true"), t.ref.handleKeyDown = function (e) {
+        (e.keyCode === On || e.keyCode === yn) && (e.preventDefault(), t.ref.label.click());
+      }, t.ref.handleClick = function (e) {
+        e.target === r || r.contains(e.target) || t.ref.label.click();
+      }, r.addEventListener("keydown", t.ref.handleKeyDown), t.element.addEventListener("click", t.ref.handleClick), Dn(r, n.caption), t.appendChild(r), t.ref.label = r;
+    },
+    destroy: function destroy(e) {
+      var t = e.root;
+      t.ref.label.addEventListener("keydown", t.ref.handleKeyDown), t.element.removeEventListener("click", t.ref.handleClick);
+    },
+    write: S({
+      DID_SET_LABEL_IDLE: function DID_SET_LABEL_IDLE(e) {
+        var t = e.root,
+            n = e.action;
+        Dn(t.ref.label, n.value);
+      }
+    }),
+    mixins: {
+      styles: ["opacity", "translateX", "translateY"],
+      animations: {
+        opacity: {
+          type: "tween",
+          duration: 150
+        },
+        translateX: "spring",
+        translateY: "spring"
+      }
+    }
+  }),
+      An = D({
+    name: "drip-blob",
+    ignoreRect: !0,
+    mixins: {
+      styles: ["translateX", "translateY", "scaleX", "scaleY", "opacity"],
+      animations: {
+        scaleX: "spring",
+        scaleY: "spring",
+        translateX: "spring",
+        translateY: "spring",
+        opacity: {
+          type: "tween",
+          duration: 250
+        }
+      }
+    }
+  }),
+      bn = S({
+    DID_DRAG: function DID_DRAG(e) {
+      var t = e.root,
+          n = e.action;
+      t.ref.blob ? (t.ref.blob.translateX = n.position.scopeLeft, t.ref.blob.translateY = n.position.scopeTop, t.ref.blob.scaleX = 1, t.ref.blob.scaleY = 1, t.ref.blob.opacity = 1) : function (e) {
+        var t = e.root,
+            n = .5 * t.rect.element.width,
+            r = .5 * t.rect.element.height;
+        t.ref.blob = t.appendChildView(t.createChildView(An, {
+          opacity: 0,
+          scaleX: 2.5,
+          scaleY: 2.5,
+          translateX: n,
+          translateY: r
+        }));
+      }({
+        root: t
+      });
+    },
+    DID_DROP: function DID_DROP(e) {
+      var t = e.root;
+      t.ref.blob && (t.ref.blob.scaleX = 2.5, t.ref.blob.scaleY = 2.5, t.ref.blob.opacity = 0);
+    },
+    DID_END_DRAG: function DID_END_DRAG(e) {
+      var t = e.root;
+      t.ref.blob && (t.ref.blob.opacity = 0);
+    }
+  }),
+      Ln = D({
+    ignoreRect: !0,
+    ignoreRectUpdate: !0,
+    name: "drip",
+    write: function write(e) {
+      var t = e.root,
+          n = e.props,
+          r = e.actions;
+      bn({
+        root: t,
+        props: n,
+        actions: r
+      });
+      var o = t.ref.blob;
+      0 === r.length && o && 0 === o.opacity && (t.removeChildView(o), t.ref.blob = null);
+    }
+  }),
+      Pn = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"],
+      Mn = ["css", "csv", "html", "txt"],
+      wn = {
+    zip: "zip|compressed",
+    epub: "application/epub+zip"
+  },
+      Cn = function Cn() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "";
+    return e = e.toLowerCase(), Pn.includes(e) ? "image/" + ("jpg" === e ? "jpeg" : "svg" === e ? "svg+xml" : e) : Mn.includes(e) ? "text/" + e : wn[e] || null;
+  },
+      Nn = function Nn(e) {
+    return new Promise(function (t, n) {
+      var r = Hn(e);
+      if (r.length && !Gn(e)) return t(r);
+      Un(e).then(t);
+    });
+  },
+      Gn = function Gn(e) {
+    return !!e.files && e.files.length > 0;
+  },
+      Un = function Un(e) {
+    return new Promise(function (t, n) {
+      var r = (e.items ? Array.from(e.items) : []).filter(function (e) {
+        return Bn(e);
+      }).map(function (e) {
+        return Fn(e);
+      });
+      r.length ? Promise.all(r).then(function (e) {
+        var n = [];
+        e.forEach(function (e) {
+          n.push.apply(n, e);
+        }), t(n.filter(function (e) {
+          return e;
+        }));
+      })["catch"](console.error) : t(e.files ? Array.from(e.files) : []);
+    });
+  },
+      Bn = function Bn(e) {
+    if (Yn(e)) {
+      var t = jn(e);
+      if (t) return t.isFile || t.isDirectory;
+    }
+
+    return "file" === e.kind;
+  },
+      Fn = function Fn(e) {
+    return new Promise(function (t, n) {
+      xn(e) ? qn(jn(e)).then(t)["catch"](n) : t([e.getAsFile()]);
+    });
+  },
+      qn = function qn(e) {
+    return new Promise(function (t, n) {
+      var r = [],
+          o = 0,
+          i = 0,
+          a = function a() {
+        0 === i && 0 === o && t(r);
+      };
+
+      !function e(t) {
+        o++;
+        var s = t.createReader();
+        !function t() {
+          s.readEntries(function (n) {
+            if (0 === n.length) return o--, void a();
+            n.forEach(function (t) {
+              t.isDirectory ? e(t) : (i++, t.file(function (e) {
+                r.push(Vn(e)), i--, a();
+              }));
+            }), t();
+          }, n);
+        }();
+      }(e);
+    });
+  },
+      Vn = function Vn(e) {
+    if (e.type.length) return e;
+    var t = e.lastModifiedDate,
+        n = e.name;
+    return (e = e.slice(0, e.size, Cn(Ne(e.name)))).name = n, e.lastModifiedDate = t, e;
+  },
+      xn = function xn(e) {
+    return Yn(e) && (jn(e) || {}).isDirectory;
+  },
+      Yn = function Yn(e) {
+    return "webkitGetAsEntry" in e;
+  },
+      jn = function jn(e) {
+    return e.webkitGetAsEntry();
+  },
+      Hn = function Hn(e) {
+    var t = [];
+
+    try {
+      if ((t = Xn(e)).length) return t;
+      t = kn(e);
+    } catch (e) {}
+
+    return t;
+  },
+      kn = function kn(e) {
+    var t = e.getData("url");
+    return "string" == typeof t && t.length ? [t] : [];
+  },
+      Xn = function Xn(e) {
+    var t = e.getData("text/html");
+
+    if ("string" == typeof t && t.length) {
+      var n = t.match(/src\s*=\s*"(.+?)"/);
+      if (n) return [n[1]];
+    }
+
+    return [];
+  },
+      zn = [],
+      Wn = function Wn(e) {
+    return {
+      pageLeft: e.pageX,
+      pageTop: e.pageY,
+      scopeLeft: e.offsetX || e.layerX,
+      scopeTop: e.offsetY || e.layerY
+    };
+  },
+      Qn = function Qn(e) {
+    var t = zn.find(function (t) {
+      return t.element === e;
+    });
+    if (t) return t;
+    var n = Zn(e);
+    return zn.push(n), n;
+  },
+      Zn = function Zn(e) {
+    var t = [],
+        n = {
+      dragenter: er,
+      dragover: tr,
+      dragleave: rr,
+      drop: nr
+    },
+        o = {};
+    r(n, function (n, r) {
+      o[n] = r(e, t), e.addEventListener(n, o[n], !1);
+    });
+    var i = {
+      element: e,
+      addListener: function addListener(a) {
+        return t.push(a), function () {
+          t.splice(t.indexOf(a), 1), 0 === t.length && (zn.splice(zn.indexOf(i), 1), r(n, function (t) {
+            e.removeEventListener(t, o[t], !1);
+          }));
+        };
+      }
+    };
+    return i;
+  },
+      $n = function $n(e, t) {
+    var n,
+        r = function (e, t) {
+      return "elementFromPoint" in e || (e = document), e.elementFromPoint(t.x, t.y);
+    }("getRootNode" in (n = t) ? n.getRootNode() : document, {
+      x: e.pageX - window.pageXOffset,
+      y: e.pageY - window.pageYOffset
+    });
+
+    return r === t || t.contains(r);
+  },
+      Kn = null,
+      Jn = function Jn(e, t) {
+    try {
+      e.dropEffect = t;
+    } catch (e) {}
+  },
+      er = function er(e, t) {
+    return function (e) {
+      e.preventDefault(), Kn = e.target, t.forEach(function (t) {
+        var n = t.element,
+            r = t.onenter;
+        $n(e, n) && (t.state = "enter", r(Wn(e)));
+      });
+    };
+  },
+      tr = function tr(e, t) {
+    return function (e) {
+      e.preventDefault();
+      var n = e.dataTransfer;
+      Nn(n).then(function (r) {
+        var o = !1;
+        t.some(function (t) {
+          var i = t.filterElement,
+              a = t.element,
+              s = t.onenter,
+              u = t.onexit,
+              l = t.ondrag,
+              c = t.allowdrop;
+          Jn(n, "copy");
+          var f = c(r);
+          if (f) {
+            if ($n(e, a)) {
+              if (o = !0, null === t.state) return t.state = "enter", void s(Wn(e));
+              if (t.state = "over", i && !f) return void Jn(n, "none");
+              l(Wn(e));
+            } else i && !o && Jn(n, "none"), t.state && (t.state = null, u(Wn(e)));
+          } else Jn(n, "none");
+        });
+      });
+    };
+  },
+      nr = function nr(e, t) {
+    return function (e) {
+      e.preventDefault();
+      var n = e.dataTransfer;
+      Nn(n).then(function (n) {
+        t.forEach(function (t) {
+          var r = t.filterElement,
+              o = t.element,
+              i = t.ondrop,
+              a = t.onexit,
+              s = t.allowdrop;
+          if (t.state = null, !r || $n(e, o)) return s(n) ? void i(Wn(e), n) : a(Wn(e));
+        });
+      });
+    };
+  },
+      rr = function rr(e, t) {
+    return function (e) {
+      Kn === e.target && t.forEach(function (t) {
+        var n = t.onexit;
+        t.state = null, n(Wn(e));
+      });
+    };
+  },
+      or = function or(e, t, n) {
+    e.classList.add("filepond--hopper");
+
+    var r = n.catchesDropsOnPage,
+        o = n.requiresDropOnElement,
+        i = n.filterItems,
+        a = void 0 === i ? function (e) {
+      return e;
+    } : i,
+        s = function (e, t, n) {
+      var r = Qn(t),
+          o = {
+        element: e,
+        filterElement: n,
+        state: null,
+        ondrop: function ondrop() {},
+        onenter: function onenter() {},
+        ondrag: function ondrag() {},
+        onexit: function onexit() {},
+        onload: function onload() {},
+        allowdrop: function allowdrop() {}
+      };
+      return o.destroy = r.addListener(o), o;
+    }(e, r ? document.documentElement : e, o),
+        u = "",
+        l = "";
+
+    s.allowdrop = function (e) {
+      return t(a(e));
+    }, s.ondrop = function (e, n) {
+      var r = a(n);
+      t(r) ? (l = "drag-drop", c.onload(r, e)) : c.ondragend(e);
+    }, s.ondrag = function (e) {
+      c.ondrag(e);
+    }, s.onenter = function (e) {
+      l = "drag-over", c.ondragstart(e);
+    }, s.onexit = function (e) {
+      l = "drag-exit", c.ondragend(e);
+    };
+    var c = {
+      updateHopperState: function updateHopperState() {
+        u !== l && (e.dataset.hopperState = l, u = l);
+      },
+      onload: function onload() {},
+      ondragstart: function ondragstart() {},
+      ondrag: function ondrag() {},
+      ondragend: function ondragend() {},
+      destroy: function destroy() {
+        s.destroy();
+      }
+    };
+    return c;
+  },
+      ir = !1,
+      ar = [],
+      sr = function sr(e) {
+    Nn(e.clipboardData).then(function (e) {
+      e.length && ar.forEach(function (t) {
+        return t(e);
+      });
+    });
+  },
+      ur = function ur() {
+    var e = function e(_e2) {
+      t.onload(_e2);
+    },
+        t = {
+      destroy: function destroy() {
+        var t;
+        t = e, oe(ar, ar.indexOf(t)), 0 === ar.length && (document.removeEventListener("paste", sr), ir = !1);
+      },
+      onload: function onload() {}
+    };
+
+    return function (e) {
+      ar.includes(e) || (ar.push(e), ir || (ir = !0, document.addEventListener("paste", sr)));
+    }(e), t;
+  },
+      lr = null,
+      cr = null,
+      fr = [],
+      dr = function dr(e, t) {
+    e.element.textContent = t;
+  },
+      pr = function pr(e, t, n) {
+    var r = e.query("GET_TOTAL_ITEMS");
+    dr(e, n + " " + t + ", " + r + " " + (1 === r ? e.query("GET_LABEL_FILE_COUNT_SINGULAR") : e.query("GET_LABEL_FILE_COUNT_PLURAL"))), clearTimeout(cr), cr = setTimeout(function () {
+      !function (e) {
+        e.element.textContent = "";
+      }(e);
+    }, 1500);
+  },
+      Er = function Er(e) {
+    return e.element.parentNode.contains(document.activeElement);
+  },
+      _r = function _r(e) {
+    var t = e.root,
+        n = e.action,
+        r = t.query("GET_ITEM", n.id).filename,
+        o = t.query("GET_LABEL_FILE_PROCESSING_ABORTED");
+    dr(t, r + " " + o);
+  },
+      Tr = function Tr(e) {
+    var t = e.root,
+        n = e.action,
+        r = t.query("GET_ITEM", n.id).filename;
+    dr(t, n.status.main + " " + r + " " + n.status.sub);
+  },
+      Ir = D({
+    create: function create(e) {
+      var t = e.root,
+          n = e.props;
+      t.element.id = "filepond--assistant-" + n.id, i(t.element, "role", "status"), i(t.element, "aria-live", "polite"), i(t.element, "aria-relevant", "additions");
+    },
+    ignoreRect: !0,
+    ignoreRectUpdate: !0,
+    write: S({
+      DID_LOAD_ITEM: function DID_LOAD_ITEM(e) {
+        var t = e.root,
+            n = e.action;
+
+        if (Er(t)) {
+          t.element.textContent = "";
+          var r = t.query("GET_ITEM", n.id);
+          fr.push(r.filename), clearTimeout(lr), lr = setTimeout(function () {
+            pr(t, fr.join(", "), t.query("GET_LABEL_FILE_ADDED")), fr.length = 0;
+          }, 750);
+        }
+      },
+      DID_REMOVE_ITEM: function DID_REMOVE_ITEM(e) {
+        var t = e.root,
+            n = e.action;
+
+        if (Er(t)) {
+          var r = n.item;
+          pr(t, r.filename, t.query("GET_LABEL_FILE_REMOVED"));
+        }
+      },
+      DID_COMPLETE_ITEM_PROCESSING: function DID_COMPLETE_ITEM_PROCESSING(e) {
+        var t = e.root,
+            n = e.action,
+            r = t.query("GET_ITEM", n.id).filename,
+            o = t.query("GET_LABEL_FILE_PROCESSING_COMPLETE");
+        dr(t, r + " " + o);
+      },
+      DID_ABORT_ITEM_PROCESSING: _r,
+      DID_REVERT_ITEM_PROCESSING: _r,
+      DID_THROW_ITEM_REMOVE_ERROR: Tr,
+      DID_THROW_ITEM_LOAD_ERROR: Tr,
+      DID_THROW_ITEM_INVALID: Tr,
+      DID_THROW_ITEM_PROCESSING_ERROR: Tr
+    }),
+    tag: "span",
+    name: "assistant"
+  }),
+      vr = function vr(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : "-";
+    return e.replace(new RegExp(t + ".", "g"), function (e) {
+      return e.charAt(1).toUpperCase();
+    });
+  },
+      mr = function mr(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 16,
+        n = !(arguments.length > 2 && void 0 !== arguments[2]) || arguments[2],
+        r = Date.now(),
+        o = null;
+    return function () {
+      for (var i = arguments.length, a = new Array(i), s = 0; s < i; s++) {
+        a[s] = arguments[s];
+      }
+
+      clearTimeout(o);
+
+      var u = Date.now() - r,
+          l = function l() {
+        r = Date.now(), e.apply(void 0, a);
+      };
+
+      u < t ? n || (o = setTimeout(l, t - u)) : l();
+    };
+  },
+      hr = function hr(e) {
+    var t = e.ref.list.childViews[0].childViews[0];
+    return t ? {
+      top: t.rect.element.marginTop,
+      bottom: t.rect.element.marginBottom
+    } : {
+      top: 0,
+      bottom: 0
+    };
+  },
+      gr = function gr(e) {
+    var t = 0,
+        n = 0,
+        r = e.ref.list,
+        o = r.childViews[0],
+        i = o.childViews;
+    if (0 === i.length) return {
+      visual: t,
+      bounds: n
+    };
+
+    var a = o.rect.element.width,
+        s = dn(o, r.dragCoordinates),
+        u = i[0].rect.element,
+        l = u.marginTop + u.marginBottom,
+        c = u.marginLeft + u.marginRight,
+        f = u.width + c,
+        d = u.height + l,
+        p = void 0 !== s && s >= 0 ? 1 : 0,
+        E = i.find(function (e) {
+      return e.markedForRemoval && e.opacity < .45;
+    }) ? -1 : 0,
+        _ = i.length + p + E,
+        T = Math.round(a / f);
+
+    return 1 === T ? i.forEach(function (e) {
+      var r = e.rect.element.height + l;
+      n += r, t += r * e.opacity;
+    }) : (n = Math.ceil(_ / T) * d, t = n), {
+      visual: t,
+      bounds: n
+    };
+  },
+      Rr = function Rr(e) {
+    var t = e.ref.measureHeight || null;
+    return {
+      cappedHeight: parseInt(e.style.maxHeight, 10) || null,
+      fixedHeight: 0 === t ? null : t
+    };
+  },
+      Or = function Or(e, t) {
+    var n = e.query("GET_ALLOW_REPLACE"),
+        r = e.query("GET_ALLOW_MULTIPLE"),
+        o = e.query("GET_TOTAL_ITEMS"),
+        i = e.query("GET_MAX_FILES"),
+        a = t.length;
+    return !r && a > 1 || !!(q(i = r ? i : n ? i : 1) && o + a > i) && (e.dispatch("DID_THROW_MAX_FILES", {
+      source: t,
+      error: We("warning", 0, "Max files")
+    }), !0);
+  },
+      yr = function yr(e, t) {
+    var n = e.childViews[0];
+    return dn(n, {
+      left: t.scopeLeft - n.rect.element.left,
+      top: t.scopeTop - (e.rect.outer.top + e.rect.element.marginTop + e.rect.element.scrollTop)
+    });
+  },
+      Dr = function Dr(e) {
+    var t = e.query("GET_ALLOW_DROP"),
+        n = e.query("GET_DISABLED"),
+        r = t && !n;
+
+    if (r && !e.ref.hopper) {
+      var o = or(e.element, function (t) {
+        if (Or(e, t)) return !1;
+
+        var n = e.query("GET_BEFORE_DROP_FILE") || function () {
+          return !0;
+        };
+
+        return !e.query("GET_DROP_VALIDATION") || t.every(function (t) {
+          return Te("ALLOW_HOPPER_ITEM", t, {
+            query: e.query
+          }).every(function (e) {
+            return !0 === e;
+          }) && n(t);
+        });
+      }, {
+        filterItems: function filterItems(t) {
+          var n = e.query("GET_IGNORED_FILES");
+          return t.filter(function (e) {
+            return !dt(e) || !n.includes(e.name.toLowerCase());
+          });
+        },
+        catchesDropsOnPage: e.query("GET_DROP_ON_PAGE"),
+        requiresDropOnElement: e.query("GET_DROP_ON_ELEMENT")
+      });
+      o.onload = function (t, n) {
+        e.dispatch("ADD_ITEMS", {
+          items: t,
+          index: yr(e.ref.list, n),
+          interactionMethod: J
+        }), e.dispatch("DID_DROP", {
+          position: n
+        }), e.dispatch("DID_END_DRAG", {
+          position: n
+        });
+      }, o.ondragstart = function (t) {
+        e.dispatch("DID_START_DRAG", {
+          position: t
+        });
+      }, o.ondrag = mr(function (t) {
+        e.dispatch("DID_DRAG", {
+          position: t
+        });
+      }), o.ondragend = function (t) {
+        e.dispatch("DID_END_DRAG", {
+          position: t
+        });
+      }, e.ref.hopper = o, e.ref.drip = e.appendChildView(e.createChildView(Ln));
+    } else !r && e.ref.hopper && (e.ref.hopper.destroy(), e.ref.hopper = null, e.removeChildView(e.ref.drip));
+  },
+      Sr = function Sr(e, t) {
+    var n = e.query("GET_ALLOW_BROWSE"),
+        r = e.query("GET_DISABLED"),
+        o = n && !r;
+    o && !e.ref.browser ? e.ref.browser = e.appendChildView(e.createChildView(Rn, Object.assign({}, t, {
+      onload: function onload(t) {
+        if (Or(e, t)) return !1;
+        e.dispatch("ADD_ITEMS", {
+          items: t,
+          index: -1,
+          interactionMethod: ee
+        });
+      }
+    })), 0) : !o && e.ref.browser && (e.removeChildView(e.ref.browser), e.ref.browser = null);
+  },
+      Ar = function Ar(e) {
+    var t = e.query("GET_ALLOW_PASTE"),
+        n = e.query("GET_DISABLED"),
+        r = t && !n;
+    r && !e.ref.paster ? (e.ref.paster = ur(), e.ref.paster.onload = function (t) {
+      e.dispatch("ADD_ITEMS", {
+        items: t,
+        index: -1,
+        interactionMethod: te
+      });
+    }) : !r && e.ref.paster && (e.ref.paster.destroy(), e.ref.paster = null);
+  },
+      br = S({
+    DID_SET_ALLOW_BROWSE: function DID_SET_ALLOW_BROWSE(e) {
+      var t = e.root,
+          n = e.props;
+      Sr(t, n);
+    },
+    DID_SET_ALLOW_DROP: function DID_SET_ALLOW_DROP(e) {
+      var t = e.root;
+      Dr(t);
+    },
+    DID_SET_ALLOW_PASTE: function DID_SET_ALLOW_PASTE(e) {
+      var t = e.root;
+      Ar(t);
+    },
+    DID_SET_DISABLED: function DID_SET_DISABLED(e) {
+      var t = e.root,
+          n = e.props;
+      Dr(t), Ar(t), Sr(t, n), t.query("GET_DISABLED") ? t.element.dataset.disabled = "disabled" : t.element.removeAttribute("data-disabled");
+    }
+  }),
+      Lr = D({
+    name: "root",
+    read: function read(e) {
+      var t = e.root;
+      t.ref.measure && (t.ref.measureHeight = t.ref.measure.offsetHeight);
+    },
+    create: function create(e) {
+      var t = e.root,
+          n = e.props,
+          r = t.query("GET_ID");
+      r && (t.element.id = r);
+      var o = t.query("GET_CLASS_NAME");
+      o && o.split(" ").forEach(function (e) {
+        t.element.classList.add(e);
+      }), t.ref.label = t.appendChildView(t.createChildView(Sn, Object.assign({}, n, {
+        translateY: null,
+        caption: t.query("GET_LABEL_IDLE")
+      }))), t.ref.list = t.appendChildView(t.createChildView(vn, {
+        translateY: null
+      })), t.ref.panel = t.appendChildView(t.createChildView(sn, {
+        name: "panel-root"
+      })), t.ref.assistant = t.appendChildView(t.createChildView(Ir, Object.assign({}, n))), t.ref.measure = yt("div"), t.ref.measure.style.height = "100%", t.element.appendChild(t.ref.measure), t.ref.bounds = null, t.query("GET_STYLES").filter(function (e) {
+        return !P(e.value);
+      }).map(function (e) {
+        var n = e.name,
+            r = e.value;
+        t.element.dataset[n] = r;
+      }), t.ref.widthPrevious = null, t.ref.widthUpdated = mr(function () {
+        t.ref.updateHistory = [], t.dispatch("DID_RESIZE_ROOT");
+      }, 250), t.ref.previousAspectRatio = null, t.ref.updateHistory = [];
+    },
+    write: function write(e) {
+      var t = e.root,
+          n = e.props,
+          r = e.actions;
+
+      if (br({
+        root: t,
+        props: n,
+        actions: r
+      }), r.filter(function (e) {
+        return /^DID_SET_STYLE_/.test(e.type);
+      }).filter(function (e) {
+        return !P(e.data.value);
+      }).map(function (e) {
+        var n = e.type,
+            r = e.data,
+            o = vr(n.substr(8).toLowerCase(), "_");
+        t.element.dataset[o] = r.value, t.invalidateLayout();
+      }), !t.rect.element.hidden) {
+        t.rect.element.width !== t.ref.widthPrevious && (t.ref.widthPrevious = t.rect.element.width, t.ref.widthUpdated());
+        var o = t.ref.bounds;
+        o || (o = t.ref.bounds = Rr(t), t.element.removeChild(t.ref.measure), t.ref.measure = null);
+        var i = t.ref,
+            a = i.hopper,
+            s = i.label,
+            u = i.list,
+            l = i.panel;
+        a && a.updateHopperState();
+        var c = t.query("GET_PANEL_ASPECT_RATIO"),
+            f = t.query("GET_ALLOW_MULTIPLE"),
+            d = t.query("GET_TOTAL_ITEMS"),
+            p = d === (f ? t.query("GET_MAX_FILES") || 1e6 : 1),
+            E = r.find(function (e) {
+          return "DID_ADD_ITEM" === e.type;
+        });
+
+        if (p && E) {
+          var _ = E.data.interactionMethod;
+          s.opacity = 0, f ? s.translateY = -40 : _ === K ? s.translateX = 40 : s.translateY = _ === ee ? 40 : 30;
+        } else p || (s.opacity = 1, s.translateX = 0, s.translateY = 0);
+
+        var T = hr(t),
+            I = gr(t),
+            v = s.rect.element.height,
+            m = !f || p ? 0 : v,
+            h = p ? u.rect.element.marginTop : 0,
+            g = 0 === d ? 0 : u.rect.element.marginBottom,
+            R = m + h + I.visual + g,
+            O = m + h + I.bounds + g;
+
+        if (u.translateY = Math.max(0, m - u.rect.element.marginTop) - T.top, c) {
+          var y = t.rect.element.width,
+              D = y * c;
+          c !== t.ref.previousAspectRatio && (t.ref.previousAspectRatio = c, t.ref.updateHistory = []);
+          var S = t.ref.updateHistory;
+          if (S.push(y), S.length > 4) for (var A = S.length, b = A - 10, L = 0, M = A; M >= b; M--) {
+            if (S[M] === S[M - 2] && L++, L >= 2) return;
+          }
+          l.scalable = !1, l.height = D;
+          var w = D - m - (g - T.bottom) - (p ? h : 0);
+          I.visual > w ? u.overflow = w : u.overflow = null, t.height = D;
+        } else if (o.fixedHeight) {
+          l.scalable = !1;
+          var C = o.fixedHeight - m - (g - T.bottom) - (p ? h : 0);
+          I.visual > C ? u.overflow = C : u.overflow = null;
+        } else if (o.cappedHeight) {
+          var N = R >= o.cappedHeight,
+              G = Math.min(o.cappedHeight, R);
+          l.scalable = !0, l.height = N ? G : G - T.top - T.bottom;
+          var U = G - m - (g - T.bottom) - (p ? h : 0);
+          R > o.cappedHeight && I.visual > U ? u.overflow = U : u.overflow = null, t.height = Math.min(o.cappedHeight, O - T.top - T.bottom);
+        } else {
+          var B = d > 0 ? T.top + T.bottom : 0;
+          l.scalable = !0, l.height = Math.max(v, R - B), t.height = Math.max(v, O - B);
+        }
+      }
+    },
+    destroy: function destroy(e) {
+      var t = e.root;
+      t.ref.paster && t.ref.paster.destroy(), t.ref.hopper && t.ref.hopper.destroy();
+    },
+    mixins: {
+      styles: ["height"]
+    }
+  }),
+      Pr = function Pr() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+        t = null,
+        n = ve(),
+        i = function (e) {
+      var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : [],
+          n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : [],
+          r = Object.assign({}, e),
+          o = [],
+          i = [],
+          a = function a(e, t, n) {
+        n ? i.push({
+          type: e,
+          data: t
+        }) : (c[e] && c[e](t), o.push({
+          type: e,
+          data: t
+        }));
+      },
+          s = function s(e) {
+        for (var t, n = arguments.length, r = new Array(n > 1 ? n - 1 : 0), o = 1; o < n; o++) {
+          r[o - 1] = arguments[o];
+        }
+
+        return l[e] ? (t = l)[e].apply(t, r) : null;
+      },
+          u = {
+        getState: function getState() {
+          return Object.assign({}, r);
+        },
+        processActionQueue: function processActionQueue() {
+          var e = [].concat(o);
+          return o.length = 0, e;
+        },
+        processDispatchQueue: function processDispatchQueue() {
+          var e = [].concat(i);
+          i.length = 0, e.forEach(function (e) {
+            var t = e.type,
+                n = e.data;
+            a(t, n);
+          });
+        },
+        dispatch: a,
+        query: s
+      },
+          l = {};
+
+      t.forEach(function (e) {
+        l = Object.assign({}, e(r), {}, l);
+      });
+      var c = {};
+      return n.forEach(function (e) {
+        c = Object.assign({}, e(a, s, r), {}, c);
+      }), u;
+    }({
+      items: [],
+      listUpdateTimeout: null,
+      itemUpdateTimeout: null,
+      processingQueue: [],
+      options: W(n)
+    }, [Pe, $(n)], [Rt, Z(n)]);
+
+    i.dispatch("SET_OPTIONS", {
+      options: e
+    });
+
+    var a = function a() {
+      document.hidden || i.dispatch("KICK");
+    };
+
+    document.addEventListener("visibilitychange", a);
+
+    var s = null,
+        u = !1,
+        l = !1,
+        c = null,
+        f = null,
+        d = function d() {
+      u || (u = !0), clearTimeout(s), s = setTimeout(function () {
+        u = !1, c = null, f = null, l && (l = !1, i.dispatch("DID_STOP_RESIZE"));
+      }, 500);
+    };
+
+    window.addEventListener("resize", d);
+
+    var p = Lr(i, {
+      id: re()
+    }),
+        _ = !1,
+        T = !1,
+        I = {
+      _read: function _read() {
+        u && (f = window.innerWidth, c || (c = f), l || f === c || (i.dispatch("DID_START_RESIZE"), l = !0)), T && _ && (_ = null === p.element.offsetParent), _ || (p._read(), T = p.rect.element.hidden);
+      },
+      _write: function _write(e) {
+        var t,
+            n = i.processActionQueue().filter(function (e) {
+          return !/^SET_/.test(e.type);
+        });
+        _ && !n.length || (h(n), _ = p._write(e, n, l), (t = i.query("GET_ITEMS")).forEach(function (e, n) {
+          e.released && oe(t, n);
+        }), _ && i.processDispatchQueue());
+      }
+    },
+        v = function v(e) {
+      return function (t) {
+        var n = {
+          type: e
+        };
+        if (!t) return n;
+        if (t.hasOwnProperty("error") && (n.error = t.error ? Object.assign({}, t.error) : null), t.status && (n.status = Object.assign({}, t.status)), t.file && (n.output = t.file), t.source) n.file = t.source;else if (t.item || t.id) {
+          var r = t.item ? t.item : i.query("GET_ITEM", t.id);
+          n.file = r ? ue(r) : null;
+        }
+        return t.items && (n.items = t.items.map(ue)), /progress/.test(e) && (n.progress = t.progress), n;
+      };
+    },
+        m = {
+      DID_DESTROY: v("destroy"),
+      DID_INIT: v("init"),
+      DID_THROW_MAX_FILES: v("warning"),
+      DID_START_ITEM_LOAD: v("addfilestart"),
+      DID_UPDATE_ITEM_LOAD_PROGRESS: v("addfileprogress"),
+      DID_LOAD_ITEM: v("addfile"),
+      DID_THROW_ITEM_INVALID: [v("error"), v("addfile")],
+      DID_THROW_ITEM_LOAD_ERROR: [v("error"), v("addfile")],
+      DID_THROW_ITEM_REMOVE_ERROR: [v("error"), v("removefile")],
+      DID_PREPARE_OUTPUT: v("preparefile"),
+      DID_START_ITEM_PROCESSING: v("processfilestart"),
+      DID_UPDATE_ITEM_PROCESS_PROGRESS: v("processfileprogress"),
+      DID_ABORT_ITEM_PROCESSING: v("processfileabort"),
+      DID_COMPLETE_ITEM_PROCESSING: v("processfile"),
+      DID_COMPLETE_ITEM_PROCESSING_ALL: v("processfiles"),
+      DID_REVERT_ITEM_PROCESSING: v("processfilerevert"),
+      DID_THROW_ITEM_PROCESSING_ERROR: [v("error"), v("processfile")],
+      DID_REMOVE_ITEM: v("removefile"),
+      DID_UPDATE_ITEMS: v("updatefiles"),
+      DID_ACTIVATE_ITEM: v("activatefile")
+    },
+        h = function h(e) {
+      e.length && e.forEach(function (e) {
+        if (m[e.type]) {
+          var t = m[e.type];
+          (Array.isArray(t) ? t : [t]).forEach(function (t) {
+            setTimeout(function () {
+              !function (e) {
+                var t = Object.assign({
+                  pond: D
+                }, e);
+                delete t.type, p.element.dispatchEvent(new CustomEvent("FilePond:" + e.type, {
+                  detail: t,
+                  bubbles: !0,
+                  cancelable: !0,
+                  composed: !0
+                }));
+                var n = [];
+                e.hasOwnProperty("error") && n.push(e.error), e.hasOwnProperty("file") && n.push(e.file);
+                var r = ["type", "error", "file"];
+                Object.keys(e).filter(function (e) {
+                  return !r.includes(e);
+                }).forEach(function (t) {
+                  return n.push(e[t]);
+                }), D.fire.apply(D, [e.type].concat(n));
+                var o = i.query("GET_ON" + e.type.toUpperCase());
+                o && o.apply(void 0, n);
+              }(t(e.data));
+            }, 0);
+          });
+        }
+      });
+    },
+        g = function g(e) {
+      return i.dispatch("REMOVE_ITEM", {
+        query: e
+      }), null === i.query("GET_ACTIVE_ITEM", e);
+    },
+        R = function R() {
+      for (var e = arguments.length, t = new Array(e), n = 0; n < e; n++) {
+        t[n] = arguments[n];
+      }
+
+      return new Promise(function (e, n) {
+        var r = [],
+            o = {};
+        if (L(t[0])) r.push.apply(r, t[0]), Object.assign(o, t[1] || {});else {
+          var a = t[t.length - 1];
+          "object" != _typeof(a) || a instanceof Blob || Object.assign(o, t.pop()), r.push.apply(r, t);
+        }
+        i.dispatch("ADD_ITEMS", {
+          items: r,
+          index: o.index,
+          interactionMethod: K,
+          success: e,
+          failure: n
+        });
+      });
+    },
+        O = function O() {
+      return i.query("GET_ACTIVE_ITEMS");
+    },
+        y = function y(e) {
+      return new Promise(function (t, n) {
+        i.dispatch("REQUEST_ITEM_PROCESSING", {
+          query: e,
+          success: function success(e) {
+            t(e);
+          },
+          failure: function failure(e) {
+            n(e);
+          }
+        });
+      });
+    },
+        D = Object.assign({}, ie(), {}, I, {}, function (e, t) {
+      var n = {};
+      return r(t, function (t) {
+        n[t] = {
+          get: function get() {
+            return e.getState().options[t];
+          },
+          set: function set(n) {
+            e.dispatch("SET_" + Q(t, "_").toUpperCase(), {
+              value: n
+            });
+          }
+        };
+      }), n;
+    }(i, n), {
+      setOptions: function setOptions(e) {
+        return i.dispatch("SET_OPTIONS", {
+          options: e
+        });
+      },
+      addFile: function addFile(e) {
+        var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {};
+        return new Promise(function (n, r) {
+          R([{
+            source: e,
+            options: t
+          }], {
+            index: t.index
+          }).then(function (e) {
+            return n(e && e[0]);
+          })["catch"](r);
+        });
+      },
+      addFiles: R,
+      getFile: function getFile(e) {
+        return i.query("GET_ACTIVE_ITEM", e);
+      },
+      processFile: y,
+      removeFile: g,
+      getFiles: O,
+      processFiles: function processFiles() {
+        for (var e = arguments.length, t = new Array(e), n = 0; n < e; n++) {
+          t[n] = arguments[n];
+        }
+
+        var r = Array.isArray(t[0]) ? t[0] : t;
+
+        if (!r.length) {
+          var o = O().filter(function (e) {
+            return !(e.status === le.IDLE && e.origin === ce.LOCAL) && e.status !== le.PROCESSING && e.status !== le.PROCESSING_COMPLETE && e.status !== le.PROCESSING_REVERT_ERROR;
+          });
+          return Promise.all(o.map(y));
+        }
+
+        return Promise.all(r.map(y));
+      },
+      removeFiles: function removeFiles() {
+        for (var e = arguments.length, t = new Array(e), n = 0; n < e; n++) {
+          t[n] = arguments[n];
+        }
+
+        var r = Array.isArray(t[0]) ? t[0] : t,
+            o = O();
+        return r.length ? r.map(function (e) {
+          return E(e) ? o[e] ? o[e].id : null : e;
+        }).filter(function (e) {
+          return e;
+        }).map(g) : Promise.all(o.map(g));
+      },
+      sort: function sort(e) {
+        return i.dispatch("SORT", {
+          compare: e
+        });
+      },
+      browse: function browse() {
+        var e = p.element.querySelector("input[type=file]");
+        e && e.click();
+      },
+      destroy: function destroy() {
+        D.fire("destroy", p.element), i.dispatch("ABORT_ALL"), p._destroy(), window.removeEventListener("resize", d), document.removeEventListener("visibilitychange", a), i.dispatch("DID_DESTROY");
+      },
+      insertBefore: function insertBefore(e) {
+        return A(p.element, e);
+      },
+      insertAfter: function insertAfter(e) {
+        return b(p.element, e);
+      },
+      appendTo: function appendTo(e) {
+        return e.appendChild(p.element);
+      },
+      replaceElement: function replaceElement(e) {
+        A(p.element, e), e.parentNode.removeChild(e), t = e;
+      },
+      restoreElement: function restoreElement() {
+        t && (b(t, p.element), p.element.parentNode.removeChild(p.element), t = null);
+      },
+      isAttachedTo: function isAttachedTo(e) {
+        return p.element === e || t === e;
+      },
+      element: {
+        get: function get() {
+          return p.element;
+        }
+      },
+      status: {
+        get: function get() {
+          return i.query("GET_STATUS");
+        }
+      }
+    });
+
+    return i.dispatch("DID_INIT"), o(D);
+  },
+      Mr = function Mr() {
+    var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {},
+        t = {};
+    return r(ve(), function (e, n) {
+      t[e] = n[0];
+    }), Pr(Object.assign({}, t, {}, e));
+  },
+      wr = function wr(e) {
+    var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+        n = [];
+    r(e.attributes, function (t) {
+      n.push(e.attributes[t]);
+    });
+    var o = n.filter(function (e) {
+      return e.name;
+    }).reduce(function (t, n) {
+      var r,
+          o = i(e, n.name);
+      return t[(r = n.name, vr(r.replace(/^data-/, "")))] = o === n.name || o, t;
+    }, {});
+    return function e(t, n) {
+      r(n, function (n, o) {
+        r(t, function (e, r) {
+          var i = new RegExp(n);
+          if (i.test(e) && (delete t[e], !1 !== o)) if (G(o)) t[o] = r;else {
+            var a,
+                s = o.group;
+            H(o) && !t[s] && (t[s] = {}), t[s][(a = e.replace(i, ""), a.charAt(0).toLowerCase() + a.slice(1))] = r;
+          }
+        }), o.mapping && e(t[o.group], o.mapping);
+      });
+    }(o, t), o;
+  },
+      Cr = function Cr() {
+    return (arguments.length <= 0 ? void 0 : arguments[0]) instanceof HTMLElement ? function (e) {
+      var t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {},
+          n = {
+        "^class$": "className",
+        "^multiple$": "allowMultiple",
+        "^capture$": "captureMethod",
+        "^server": {
+          group: "server",
+          mapping: {
+            "^process": {
+              group: "process"
+            },
+            "^revert": {
+              group: "revert"
+            },
+            "^fetch": {
+              group: "fetch"
+            },
+            "^restore": {
+              group: "restore"
+            },
+            "^load": {
+              group: "load"
+            }
+          }
+        },
+        "^type$": !1,
+        "^files$": !1
+      };
+      Te("SET_ATTRIBUTE_TO_OPTION_MAP", n);
+      var r = Object.assign({}, t),
+          o = wr("FIELDSET" === e.nodeName ? e.querySelector("input[type=file]") : e, n);
+      Object.keys(o).forEach(function (e) {
+        H(o[e]) ? (H(r[e]) || (r[e] = {}), Object.assign(r[e], o[e])) : r[e] = o[e];
+      }), r.files = (t.files || []).concat(Array.from(e.querySelectorAll("input:not([type=file])")).map(function (e) {
+        return {
+          source: e.value,
+          options: {
+            type: e.dataset.type
+          }
+        };
+      }));
+      var i = Mr(r);
+      return e.files && Array.from(e.files).forEach(function (e) {
+        i.addFile(e);
+      }), i.replaceElement(e), i;
+    }.apply(void 0, arguments) : Mr.apply(void 0, arguments);
+  },
+      Nr = ["fire", "_read", "_write"],
+      Gr = function Gr(e) {
+    var t = {};
+    return ae(e, t, Nr), t;
+  },
+      Ur = function Ur(e, t) {
+    return e.replace(/(?:{([a-zA-Z]+)})/g, function (e, n) {
+      return t[n];
+    });
+  },
+      Br = function Br(e) {
+    var t = new Blob(["(", e.toString(), ")()"], {
+      type: "application/javascript"
+    }),
+        n = URL.createObjectURL(t),
+        r = new Worker(n);
+    return {
+      transfer: function transfer(e, t) {},
+      post: function post(e, t, n) {
+        var o = re();
+        r.onmessage = function (e) {
+          e.data.id === o && t(e.data.message);
+        }, r.postMessage({
+          id: o,
+          message: e
+        }, n);
+      },
+      terminate: function terminate() {
+        r.terminate(), URL.revokeObjectURL(n);
+      }
+    };
+  },
+      Fr = function Fr(e) {
+    return new Promise(function (t, n) {
+      var r = new Image();
+      r.onload = function () {
+        t(r);
+      }, r.onerror = function (e) {
+        n(e);
+      }, r.src = e;
+    });
+  },
+      qr = function qr(e, t) {
+    var n = e.slice(0, e.size, e.type);
+    return n.lastModifiedDate = e.lastModifiedDate, n.name = t, n;
+  },
+      Vr = function Vr(e) {
+    return qr(e, e.name);
+  },
+      xr = [],
+      Yr = function Yr(e) {
+    if (!xr.includes(e)) {
+      xr.push(e);
+      var t,
+          n = e({
+        addFilter: Ie,
+        utils: {
+          Type: pe,
+          forin: r,
+          isString: G,
+          isFile: dt,
+          toNaturalFileSize: Pt,
+          replaceInString: Ur,
+          getExtensionFromFilename: Ne,
+          getFilenameWithoutExtension: ft,
+          guesstimateMimeType: Cn,
+          getFileFromBlob: Be,
+          getFilenameFromURL: Ce,
+          createRoute: S,
+          createWorker: Br,
+          createView: D,
+          createItemAPI: ue,
+          loadImage: Fr,
+          copyFile: Vr,
+          renameFile: qr,
+          createBlob: Fe,
+          applyFilterChain: _e,
+          text: Dt,
+          getNumericAspectRatioFromString: ge
+        },
+        views: {
+          fileActionButton: Lt
+        }
+      });
+      t = n.options, Object.assign(me, t);
+    }
+  },
+      jr = (kt = "undefined" != typeof window && void 0 !== window.document && !("[object OperaMini]" === Object.prototype.toString.call(window.operamini)) && "visibilityState" in document && "Promise" in window && "slice" in Blob.prototype && "URL" in window && "createObjectURL" in window.URL && "performance" in window, function () {
+    return kt;
+  }),
+      Hr = {
+    apps: []
+  },
+      kr = function kr() {};
+
+  if (e.Status = {}, e.FileStatus = {}, e.FileOrigin = {}, e.OptionTypes = {}, e.create = kr, e.destroy = kr, e.parse = kr, e.find = kr, e.registerPlugin = kr, e.getOptions = kr, e.setOptions = kr, jr()) {
+    !function (e, t) {
+      var n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 60,
+          r = "__framePainter";
+      if (window[r]) return window[r].readers.push(e), void window[r].writers.push(t);
+      window[r] = {
+        readers: [e],
+        writers: [t]
+      };
+
+      var o = window[r],
+          i = 1e3 / n,
+          a = null,
+          s = null,
+          u = null,
+          l = null,
+          c = function c() {
+        document.hidden ? (u = function u() {
+          return window.setTimeout(function () {
+            return f(performance.now());
+          }, i);
+        }, l = function l() {
+          return window.clearTimeout(s);
+        }) : (u = function u() {
+          return window.requestAnimationFrame(f);
+        }, l = function l() {
+          return window.cancelAnimationFrame(s);
+        });
+      };
+
+      document.addEventListener("visibilitychange", function () {
+        l && l(), c(), f(performance.now());
+      });
+
+      var f = function e(t) {
+        s = u(e), a || (a = t);
+        var n = t - a;
+        n <= i || (a = t - n % i, o.readers.forEach(function (e) {
+          return e();
+        }), o.writers.forEach(function (e) {
+          return e(t);
+        }));
+      };
+
+      c(), f(performance.now());
+    }(function () {
+      Hr.apps.forEach(function (e) {
+        return e._read();
+      });
+    }, function (e) {
+      Hr.apps.forEach(function (t) {
+        return t._write(e);
+      });
+    });
+
+    var Xr = function t() {
+      document.dispatchEvent(new CustomEvent("FilePond:loaded", {
+        detail: {
+          supported: jr,
+          create: e.create,
+          destroy: e.destroy,
+          parse: e.parse,
+          find: e.find,
+          registerPlugin: e.registerPlugin,
+          setOptions: e.setOptions
+        }
+      })), document.removeEventListener("DOMContentLoaded", t);
+    };
+
+    "loading" !== document.readyState ? setTimeout(function () {
+      return Xr();
+    }, 0) : document.addEventListener("DOMContentLoaded", Xr);
+
+    var zr = function zr() {
+      return r(ve(), function (t, n) {
+        e.OptionTypes[t] = n[1];
+      });
+    };
+
+    e.Status = Object.assign({}, Oe), e.FileOrigin = Object.assign({}, ce), e.FileStatus = Object.assign({}, le), e.OptionTypes = {}, zr(), e.create = function () {
+      var t = Cr.apply(void 0, arguments);
+      return t.on("destroy", e.destroy), Hr.apps.push(t), Gr(t);
+    }, e.destroy = function (e) {
+      var t = Hr.apps.findIndex(function (t) {
+        return t.isAttachedTo(e);
+      });
+      return t >= 0 && (Hr.apps.splice(t, 1)[0].restoreElement(), !0);
+    }, e.parse = function (t) {
+      return Array.from(t.querySelectorAll(".filepond")).filter(function (e) {
+        return !Hr.apps.find(function (t) {
+          return t.isAttachedTo(e);
+        });
+      }).map(function (t) {
+        return e.create(t);
+      });
+    }, e.find = function (e) {
+      var t = Hr.apps.find(function (t) {
+        return t.isAttachedTo(e);
+      });
+      return t ? Gr(t) : null;
+    }, e.registerPlugin = function () {
+      for (var e = arguments.length, t = new Array(e), n = 0; n < e; n++) {
+        t[n] = arguments[n];
+      }
+
+      t.forEach(Yr), zr();
+    }, e.getOptions = function () {
+      var e = {};
+      return r(ve(), function (t, n) {
+        e[t] = n[0];
+      }), e;
+    }, e.setOptions = function (t) {
+      return H(t) && (Hr.apps.forEach(function (e) {
+        e.setOptions(t);
+      }), function (e) {
+        r(e, function (e, t) {
+          me[e] && (me[e][0] = z(t, me[e][0], me[e][1]));
+        });
+      }(t)), e.getOptions();
+    };
+  }
+
+  e.supported = jr, Object.defineProperty(e, "__esModule", {
+    value: !0
+  });
+});
 
 /***/ }),
 

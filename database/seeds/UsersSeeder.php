@@ -24,9 +24,9 @@ class UsersSeeder extends Seeder
 
         User::create($userData);
 
-        $apt = Apartment::inRandomOrder()->first();
-
-        $apt['user_id'] = '21';
+        // $apt = Apartment::inRandomOrder()->first();
+        //
+        // $apt['user_id'] = '21';
 
     }
 }

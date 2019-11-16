@@ -12,7 +12,7 @@
 @section('content')
   <a href="{{route('apt.create')}}">Registra un nuovo appartamento...</a>
 <div class="container">
-  @if (!empty($apts))
+  @if (count($apts) > 0)
     @foreach ($apts as $apt)
       <div class="col-md-4 col-xs-12">
         <h4>{{$apt->description}}</h4>
@@ -22,7 +22,7 @@
           <p>Posti letto: {{$apt->beds}}</p>
           <p>Numero di bagni: {{$apt->bathromms}}</p>
           <p>Indirizzo: {{$apt->address}}</p>
-          <p>Visualizzazioni: {{rand(100, 500)}}</p>
+          <p>Visualizzazioni: {{$apt->visualizations}}</p>
           <a href="{{route('apt.show', $apt->id)}}">Visualizza</a> <br>
         </div>
       </div>

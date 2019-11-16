@@ -5,7 +5,7 @@
   <header class="row col-md-12 header-absolute  color-white">
     {{-- <div class=""> --}}
       <div class="logo col-md-4 col-xs-10">
-        <a class="col-md-2 col-xs-1"href="{{route('index')}}"><img src="../air.jpg" alt="boolbnb logo"></a>
+        <a class="col-md-2 col-xs-1"href="{{route('index')}}"><img src="air.jpg" alt="boolbnb logo"></a>
       </div>
 
       <ul class="navBar col-md-8">
@@ -40,11 +40,45 @@
 @section('content')
 
   <div class="img-background">
-    <img src="/img/imag1.jpg" alt="">
+    <img src="img/imag1.jpg" alt="">
 
     <section class="row">
       <div class="inputApparts col-lg-5 col-md-8 col-sm-12">
-        <h1>Cerca gli appartamenti nella Tua zona.</h1>
+        <div class="">
+          Inserisci parametri di ricerca:
+        </div>
+        <div class="">
+          <form class="" action="{{route('apt.index')}}" method="get">
+            @csrf
+            @method('GET')
+            <div class="">
+              <label for="beds">Posti letto: </label>
+              <input type="text" name="beds" value="1">
+            </div>
+            <div class="">
+              <label for="rooms">N. stanze</label>
+              <input type="text" name="rooms" value="1">
+            </div>
+            <div class="">
+              <label for="bathrooms">N. Bagni</label>
+              <input type="text" name="bathrooms" value="1">
+            </div>
+            <div class="">
+              <label for="feature"><h3>Servizi disponibili</h3></label>
+              <ul>
+                @foreach ($features as $feature)
+                  <li><input type="checkbox" name="features[]" value="{{$feature -> id}}">{{$feature-> type}}</li>
+                @endforeach
+              </ul>
+            </div>
+
+            <div class="">
+                <button type="submit">Vai</button>
+            </div>
+
+          </form>
+        </div>
+        {{-- <h1>Cerca gli appartamenti nella Tua zona.</h1>
         <form class="" action="index.html" method="post">
           <h3>Dove: </h3>
           <input class="position" type="text" name="position" value="" placeholder="Ovunque">
@@ -56,7 +90,7 @@
           <input class="position" type="text" name="position" value="" placeholder="01-11-2019">
           <!-- <input class="positionButt" type="button" name="" value="Vai"> -->
           <button class ="searchGo" type="button" name="button">Avvia la ricerca</button>
-        </form>
+        </form> --}}
       </div>
     </section>
   </div>

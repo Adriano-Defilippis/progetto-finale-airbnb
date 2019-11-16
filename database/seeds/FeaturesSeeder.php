@@ -14,6 +14,13 @@ class FeaturesSeeder extends Seeder
      */
     public function run()
     {
-        factory(Feature::class, 15)->create();
+        factory(Feature::class, 9)
+        ->create()
+        ->each(function($feat){
+
+          $apts = Apartment::inRandomOrder()->take(rand(10,20))->get();
+
+          $feat->apartments()->attach($apts);
+        });
     }
 }
