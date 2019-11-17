@@ -2,7 +2,7 @@
 <script type="text/x-template" id="template_addresBar">
   <div class="myContainer">
     <div class="img-background">
-      <img src="/img/imag1.jpg" alt="" v-show='!formShow'>
+      <img src="{{asset('img/imag1.jpg')}}" alt="" v-show='!formShow'>
 
 
     <form class="apt-form" v-bind:action="action_route" method="POST" enctype="multipart/form-data">
@@ -11,11 +11,7 @@
 
       <div class="center_on_page" v-show='!formShow'>
         <label class="white" for="address">Dove si trova l'appartamento? </label>
-        <input id="address-field" type="text" name="address"
-        @isset($apt->address)
-          v-bind:value="prev_address"
-        @endisset
-        required>
+        <input id="address-field" type="text" name="address" required>
         <input  @click="setFormShow()" type="button" value="GO"></input>
       </div>
 
@@ -37,16 +33,16 @@
           <div class="info col-md-4 form-group">
             <h2>Informazioni:</h2>
             <label for="mq">Dimensioni</label>
-            <input type="text" name="mq" v-bind:value="prev_mq" required>
+            <input type="number" name="mq" v-bind:value="prev_mq" required>
 
             <label for="rooms">Numero di camere</label>
-            <input type="text" name="rooms" v-bind:value="prev_rooms" required>
+            <input type="number" name="rooms" v-bind:value="prev_rooms" required>
 
             <label for="beds">Posti letto</label>
-            <input type="text" name="beds" v-bind:value="prev_beds" required>
+            <input type="number" name="beds" v-bind:value="prev_beds" required>
 
             <label for="bathrooms">Numero di bagni</label>
-            <input type="text" name="bathrooms" v-bind:value="prev_bathrooms" required>
+            <input type="number" name="bathrooms" v-bind:value="prev_bathrooms" required>
           </div>
 
         </section>

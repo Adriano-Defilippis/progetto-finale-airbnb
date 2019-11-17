@@ -1,6 +1,6 @@
 <script type="text/x-template" id="template_messages">
 
-  <div class="box">
+
 
     <!-- Form per invio messaggio  -->
     @if (Auth::id() != $apt->user_id || Auth::guest())
@@ -11,7 +11,7 @@
       <div class="card">
 
         <div class="card-header">
-            <label class="col-lg-12" for="sender_email" name="sender_email">Inserisi la tua mail</label>
+            <label class="col-lg-12" for="sender_email" name="sender_email">Inserisci la tua mail</label>
             <input class="col-lg-12" type="email" name="sender_email" v-model="email"/>
         </div>
 

@@ -71,3 +71,24 @@
   }
 
  }
+
+.new-apt-form{
+    width: 100%;
+    max-width: 200px;
+    height: 200px;
+    margin: 25px auto;
+
+    .new-apt-button{
+      font-size: 6rem;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #ea1226;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+    }
+    .new-apt-button:hover{
+      background-color:#ea1226a8;
+    }
+}

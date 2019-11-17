@@ -30,45 +30,46 @@ class PaymentController extends Controller
 
         $payment = $apartment -> payments()->orderBy('created_at', 'asc')->first();
 
-        $duration =  $id_tier_active -> duration;
-        $last_payment =  Carbon::parse($payment -> created_at);
-        //
-        $expiration_date = Carbon::parse($payment -> created_at) -> addHour($duration);
-        $now = Carbon::now();
-        //
-        $msg = "Expiration Time -" . $expiration_date->diffInHours($now,true) . " Hours";
+          if($payment){
+            $duration =  $id_tier_active -> duration;
+            $last_payment =  Carbon::parse($payment -> created_at);
+
+            $expiration_date = Carbon::parse($payment -> created_at) -> addHour($duration);
+            $now = Carbon::now();
+
+            $msg = "Expiration Time -" . $expiration_date->diffInHours($now,true) . " Hours";
 
 
-        $diff= "Nessun pagamento ancora effettuato";
-        if ($last_payment) {
+            $diff= "Nessun pagamento ancora effettuato";
+            if ($last_payment) {
 
-          // Differenza in giorni dall'ultimo pagamento
-          $diff = $last_payment->diffInHours($now,true) . " Hours ago";
+              // Differenza in giorni dall'ultimo pagamento
+              $diff = $last_payment->diffInHours($now,true) . " Hours ago";
 
-          if ($diff > 24) {
+              if ($diff > 24) {
 
-            $diff = $last_payment->diffInDays($now,true) . " Days ago";
+                $diff = $last_payment->diffInDays($now,true) . " Days ago";
+              }
+            }
+
+            if ($now > $expiration_date) {
+
+              $msg = "Sottoscozione scaduta";
+
+              $diff = $expiration_date->diffInHours($now,true);
+            }
+
+            return response()->json([
+
+              "last_payment" => $last_payment,
+              "expiration_date" => $expiration_date,
+              $duration,
+              $now,
+              "msg_subs" => $msg,
+              "diff" => $diff,
+              "tier_id_from_apt" => $tier_id
+            ]);
           }
-        }
-
-        if ($now > $expiration_date) {
-
-          $msg = "Sottoscozione scaduta";
-
-          $diff = $expiration_date->diffInHours($now,true);
-        }
-
-        return response()->json([
-
-          "ciao",
-          "last_payment" => $last_payment,
-          "expiration_date" => $expiration_date,
-          $duration,
-          $now,
-          "msg_subs" => $msg,
-          "diff" => $diff,
-          "tier_id_from_apt" => $tier_id
-        ]);
     }
 
 
@@ -174,7 +175,7 @@ class PaymentController extends Controller
     public function showTiers()
     {
         $tiers = Tier::where('id', '>', 1)->select('id', 'price', 'level', 'duration')->get();
-        
+
         return response()->json([
 
           "tiers" => $tiers

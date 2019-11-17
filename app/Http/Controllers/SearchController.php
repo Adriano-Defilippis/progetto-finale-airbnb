@@ -94,9 +94,8 @@ class SearchController extends Controller
     **/
     public function getMapData($validatedApt){
 
-    //Recupera coordinate e mappa
+    // Recupera coordinate e mappa
     $apiKey = env('TOMTOM_APIKEY');
-
     $tomtom = new Client(['base_uri' => 'https://api.tomtom.com']);
 
     $response = $tomtom->request('GET',
@@ -145,5 +144,74 @@ class SearchController extends Controller
     }
 
       return ($validatedApt);
+
   }
+  //
+
+
+  // /**
+  // * Chiede a TomTom mappa per front
+  // **/
+  public function getMapFront(Request $request, $id){
+  //
+  // //Recupera coordinate e mappa
+  $apiKey = env('TOMTOM_APIKEY');
+  //
+  $tomtom = new Client(['base_uri' => 'https://api.tomtom.com']);
+  //
+  $response = $tomtom->request('GET',
+                              '/search/2/geocode/'. $request -> address . '.json',
+                              [
+                                'query'=> [
+                                  'key'=>$apiKey,
+                                  'extendedPostalCodesFor'=>'PAD',
+                                  'limit'=>'1'
+                                  ]
+                                ]);
+  $body = json_decode($response->getBody(), true);
+  //
+  if ( $body['results']){
+    //recupero lat e lon
+    $positions = $body['results'][0]['position'];
+    $lat = $positions['lat'];
+    $lon = $positions['lon'];
+
+      //recupero la mappa
+      $responseMap = $tomtom->request('GET',
+                                    '/map/1/staticimage',
+                                    [
+                                      'query' => [
+                                        'key'=>$apiKey,
+                                        'layer' => 'hybrid',
+                                        'style' => 'main',
+                                        'format' => 'png',
+                                        'zoom' => '7',
+                                        'center' => $lon.', '.$lat,
+                                        'width' => '512',
+                                        'height' => '512',
+                                        'view' => 'Unified',
+                                      ]
+                                    ]);
+     // Cerco img_map_path nel database
+     $pat_img = Apartment::findOrFail($id) -> map_img_path;
+     if($pat_img){
+         return response()->json([
+           $request -> address,
+           "body" => $body,
+           // "mappa" => $jsonMap,
+           "filename" => $pat_img,
+           $lat,
+           $lon
+         ]);
+   }
+  }
+    return response()->json([
+      "Couldn't find map data"
+    ],404);
+
+  }
+
+
+
+
 }

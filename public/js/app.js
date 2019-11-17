@@ -78693,6 +78693,10 @@ function init() {
 
   var payment_comp = new Vue({
     el: '#vue_payment'
+  }); // Component Mappa
+
+  var map_comp = new Vue({
+    el: '#vue_map'
   });
 }
 

@@ -1,5 +1,7 @@
-@extends('layouts.app')
-
+@extends('layouts.base')
+@section('content_header')
+  @include('component.header')
+@endsection
 @section('content')
 <div class="container">
   <h1>Registrati</h1>

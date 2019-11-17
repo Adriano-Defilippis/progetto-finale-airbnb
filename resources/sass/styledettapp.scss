@@ -43,7 +43,9 @@ header {
   }
 }
 
-
+tr{
+  background-color: rgba(197,202,233,1);
+}
 
 section{
 
@@ -54,6 +56,23 @@ section{
     margin-top: 0;
     margin-bottom: 1rem;
 
+
+  }
+
+  #vue_map{
+
+    font-weight: bolder;
+    color: $indigo;
+    #path_map{
+      // z-index: 8;
+    }
+
+    .pointer{
+      z-index: 10;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+    }
 
   }
 

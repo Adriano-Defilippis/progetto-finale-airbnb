@@ -61,6 +61,12 @@ function init(){
 
       el: '#vue_payment'
   });
+
+  // Component Mappa
+  var map_comp = new Vue({
+
+      el: '#vue_map'
+  });
 };
 
 // funzione per DROPIN file immagine

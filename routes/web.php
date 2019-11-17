@@ -40,7 +40,7 @@ Route::post('/{id}', 'ApartmentController@update')
       ->name('apt.update')
       ->middleware('auth');
 
-Route::get('/{id}', 'ApartmentController@destroy')
+Route::get('/apt/{id}/delete', 'ApartmentController@destroy')
       ->name('apt.destroy')
       ->middleware('auth');
 
@@ -56,6 +56,9 @@ Route::get('/tiers/{id}', 'PaymentController@showTiers')
       ->name('tiers.get')
       ->middleware('auth');
 
+
+Route::post('/map/{id}', 'SearchController@getMapFront')
+      ->name('map.get');
 
 
 Route::post('/payment/{id}', function(Request $request, $id){

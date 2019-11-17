@@ -1,14 +1,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.4.2/handlebars.js"></script>
 <script type="text/x-template" id="template_payments">
 
-  <div class="col-lg-12 col-sm-12">
+  <div class="">
 
   <!-- Info Piano Sottoscrizione -->
   <div class="" id="paymeffnt-form"  method="post" v-if="!showPayBrayntree">
 
-    <div class="list_group  text-center">
+    <div class="list_group">
       <div class="card-header">
-        Piano Attivo
+          <h3 class="card-title">Sponsorizzazioni</h3>
       </div>
       <div class="list_group_item">
         <h5 class="card-title" v-if="!seenSubsBtn">Sponsorizzazioni del tuo appartamento</h5>
@@ -33,19 +33,21 @@
 
 
         <!-- Tabella delle sponsorizzazioni -->
-        <div class="table-responsive-lg" v-show="show_form" v-for="one in resultsTiers">
-          <table class="table table-hover">
+        <div class="table-responsive-lg" v-show="show_form">
+          <table class="table table-hover" >
             <thead class="thead-light">
               <tr>
-                <th scope="col" v-for="(value, name) in one">@{{ name }} </th>
+                <th scope="col">Level</th>
+                <th scope="col">Price</th>
+                <th scope="col">Duration</th>
+              </tr>
+            </thead>
+            <tbody v-for="one in resultsTiers">
+              <tr>
+                <th scope="row" v-for="(value, name) in one">@{{ value }}</th>
                 <td>
                   <input class="checkbox_tier" type="checkbox" name="tier_id" :checked="active" :value="one.id" @click="check($event)"/>
                 </td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row" v-for="(value, name) in one">@{{ value }}</th>
               </tr>
             </tbody>
           </table>
@@ -75,7 +77,7 @@
       </div>
 
       <input id="nonce" name="payment_method_nonce" type="hidden" v-model="payment_method_nonce" />
-      <p @click="turnBack()"><==</p>
+      <p @click="turnBack()"><==Indietro</p>
       <button class="button" @click="braintreeScript()"><span>Test Transaction</span></button>
     </section>
 
@@ -156,11 +158,11 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
     created() {
 
       // this.returnMsgSubscription;
-      console.log("created component" + this.msgSubscription);
+      //console.log("created component" + this.msgSubscription);
       if (this.tier_id > 1) {
         this.seenSubsBtn = false;
       }
-      console.log(this.seenSubsBtn);
+      //console.log(this.seenSubsBtn);
 
     },
   //
@@ -170,7 +172,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
       // Ritorno msg stringa da Array results, da chiamata axios
       returnMsgSubscription: function () {
 
-        console.log("ciao", this.results.msg_subs);
+        //console.log("ciao", this.results.msg_subs);
         return this.results.msg_subs;
       },
 
@@ -198,10 +200,10 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
         this.results = res.data;
 
 
-        console.log("mounted response" , res.data, this.msgSubscription, res.data.tier_id_apt);
+        //console.log("mounted response" , res.data, this.msgSubscription, res.data.tier_id_apt);
       })
       .catch( error => { console.log(error); });
-      console.log("mounted" , this.results);
+      //console.log("mounted" , this.results);
     },
 
     function(e){ this.returnMsgSubscription },
@@ -255,7 +257,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
               data.append( 'payment_method_nonce', this.payment_method_nonce);
               data.append( 'tier_id', tier_for_braintree);
               data.append( 'apartment_id', apartment_id)
-              console.log("tier_idddddddd", tier_for_braintree, data);
+            //  console.log("tier_idddddddd", tier_for_braintree, data);
 
               axios.post('/payment/' + this.apt_id,
                           data,
@@ -269,14 +271,14 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
               })
                 .then(res => {
 
-                  console.log("res.data",res, paymentShow);
+                  //console.log("res.data",res, paymentShow);
                 });
             });
 
           });
         });
 
-          console.log("sono baintreeee");
+          //console.log("sono baintreeee");
     },
 
       // Funzione bottone back
@@ -285,7 +287,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
         this.showPayBrayntree = false;
         this.show_form = true;
 
-        console.log("turnback", this.showPayBrayntree);
+      //  console.log("turnback", this.showPayBrayntree);
       },
 
 
@@ -306,7 +308,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
             x[i].style.backgroundColor = "red";
             x[i].checked = false;
 
-            console.log("Set all false", x[i]);
+          //  console.log("Set all false", x[i]);
           }
 
           // Setto attributo check su elemento cliccato
@@ -315,7 +317,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
           // Assegno al Form il valore id tier cliccato
           this.selected_tier = e.target.value;
 
-          console.log("event.target", this.selected_tier,  e.target.value);
+          //console.log("event.target", this.selected_tier,  e.target.value);
 
           // se non ho nessuna box attiva
         }else if(!e.target.checked){
@@ -328,22 +330,22 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
       setShowForm(){
 
         this.show_form = !this.show_form;
-        console.log(this.show_form);
+        //console.log(this.show_form);
 
         this.getTableTiers();
-        console.log("results tiers from click" , this.resultsTiers);
+      //  console.log("results tiers from click" , this.resultsTiers);
       },
 
 
       getTableTiers(){
 
-        console.log("ciao");
+        //console.log("ciao");
 
         axios.get('/tiers/' + this.apt_id)
         .then( (res) => {
 
           this.resultsTiers = res.data.tiers;
-          console.log("response get tiers", res, this.resultsTiers);
+        //  console.log("response get tiers", res, this.resultsTiers);
         })
         .catch( error => { console.log(error); });
 
@@ -363,7 +365,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
           _token: token,
           apartment_id: this.apt_id
         };
-        console.log(user_data);
+        //console.log(user_data);
         //
         axios.get('/payment/' + this.apt_id, user_data)
           .then(function(res){
@@ -373,15 +375,15 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
             // Salvo i valori di ritorno della tabella tiers in un ARRAY
             // this.tiers = res.data['tiers'];
             success =true;
-            console.log("success", success);
-            console.log("res get form payment",res);
+          //  console.log("success", success);
+            //console.log("res get form payment",res);
           })
           .catch(function(err){
             console.log(err);
           });
 
           this.braintreeScript();
-          console.log("ci22222ao", success);
+          //console.log("ci22222ao", success);
 
       }
 
@@ -397,7 +399,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
       'payment_method_nonce': function(val){
 
           this.payment_method_nonce = val;
-          console.log("log di watch payment method nonce",this.payment_method_nonce);
+          //console.log("log di watch payment method nonce",this.payment_method_nonce);
        },
 
        'selected_tier': function(val){

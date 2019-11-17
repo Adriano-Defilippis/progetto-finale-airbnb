@@ -9,8 +9,12 @@ header.header-absolute{
   z-index: 1;
 
   a{
-
-    color: white;
+    color: black;
+    font-size: 2rem;
+    text-decoration: none;
+  }
+  a:hover{
+    text-decoration: none;
   }
 }
 
@@ -136,7 +140,6 @@ header.header-absolute{
       max-width: 400px;
       height: 400px;
       margin: 25px auto;
-      border: 1px black;
 
       img{
         height: 256px;
@@ -168,8 +171,6 @@ header.header-absolute{
     }
 
   }
-
-
 
 
 }

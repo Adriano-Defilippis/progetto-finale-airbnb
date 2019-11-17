@@ -9,7 +9,7 @@
 @section('content')
 
   @include('component.messages')
-
+  @include('component.map_comp_tomtom')
 
   @php
     use App\Tier;
@@ -24,9 +24,11 @@
   <main>
 
     <div class="photos col-md-12">
-      <img class="otherjpg col-md-12"
+      <img class="otherjpg col-md-12" src=
       @isset($apt->img_path)
-        src="/img/uploads/{{$apt->img_path}}"
+        "/img/uploads/{{$apt->img_path}}"
+      @else
+        "{{asset('img/ap1.jpg')}}"
       @endisset
 
       alt="Foto dell'appartamento">
@@ -133,16 +135,27 @@
             $storyPayments = $apt -> payments()->get();
           @endphp
         {{-- componenete pagamento --}}
-        <section id="vue_payment" class="row">
-      
-          <payments
-                    :apt_id= "{{ $apt -> id}}"
-                    :user_id="{{ $apt->user-> id }}"
-                    :tier_id="{{ $apt-> tier_id }}"
-                    :tier_active="{{ $tier_active }}"
-                    :payments_story="{{ $storyPayments }}"
-          ><payments>
-      
+        <section class="row">
+
+          <div id="vue_payment" class="col-lg-6 col-md-12">
+            <payments
+                      :apt_id= "{{ $apt -> id}}"
+                      :user_id="{{ $apt->user-> id }}"
+                      :tier_id="{{ $apt-> tier_id }}"
+                      :tier_active="{{ $tier_active }}"
+                      :payments_story="{{ $storyPayments }}"
+            ><payments>
+          </div>
+
+
+            {{-- Mappa --}}
+            <div id="vue_map" class="col-lg-6 col-md-12">
+                <map-tom-tom
+                      apt_address= "{{ $apt -> address }}"
+                      apt_id= "{{ $apt -> id}}"
+                ></map-tom-tom>
+            </div>
+
         </section>
         @endif
 
